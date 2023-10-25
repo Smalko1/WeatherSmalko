@@ -26,7 +26,6 @@ public class HibernateTest {
                     .latitude(2.33)
                     .build());
 
-
             session.merge(users);
 
             session.getTransaction().commit();
