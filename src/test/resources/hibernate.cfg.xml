@@ -20,7 +20,7 @@
         <property name="format_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">create</property>
 
-        <mapping class="com.smalko.weather.weather.entity.Users"/>
+        <mapping class="com.smalko.weather.weather.user.UsersEntity"/>
         <mapping class="com.smalko.weather.weather.entity.Location"/>
         <mapping class="com.smalko.weather.weather.entity.Session"/>
 

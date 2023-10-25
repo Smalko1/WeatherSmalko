@@ -1,4 +1,4 @@
-package com.smalko.weather.weather.repository;
+package com.smalko.weather.weather.user;
 
 import com.smalko.weather.weather.util.repository.RepositoryUtil;
 import jakarta.persistence.EntityManager;
