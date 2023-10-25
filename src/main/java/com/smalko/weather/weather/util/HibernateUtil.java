@@ -15,30 +15,26 @@ public class HibernateUtil {
     private static final Logger log = LoggerFactory.getLogger(HibernateUtil.class);
     private static SessionFactory sessionFactory;
 
-    public static SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            sessionFactory = createSessionFactory();
-        }
-        log.info("Get sessionFactory");
-        return sessionFactory;
-    }
-
-
     private static SessionFactory createSessionFactory() {
         try {
             var configuration = new Configuration();
 
             configuration.configure();
 
-            configuration.addAnnotatedClass(Location.class);
-            configuration.addAnnotatedClass(Session.class);
-            configuration.addAnnotatedClass(Users.class);
-
-            log.info("Create sessionFactory");
-            return sessionFactory = configuration.buildSessionFactory();
+            return configuration.buildSessionFactory();
         } catch (Throwable ex) {
-            log.error("Initial SessionFactory creation failed:", ex);
+            log.error("Initial SessionFactory creation failed:" + ex);
             throw new ExceptionInInitializerError(ex);
         }
+    }
+
+
+    public static SessionFactory getSessionFactory() {
+
+        if (sessionFactory == null) {
+            sessionFactory = createSessionFactory();
+        }
+        return sessionFactory;
+
     }
 }

@@ -15,16 +15,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Name("session")
+@Table(name = "session")
 public class Session {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
     @OneToOne
-    @Name(value = "users_id")
-    private Users usersId;
+    @JoinColumn(name = "user_id")
+    private Users users;
 
     private LocalDateTime expiresAt;
 }

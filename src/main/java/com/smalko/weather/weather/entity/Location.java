@@ -7,12 +7,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Name("location")
+@Table(name = "location")
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +24,8 @@ public class Location {
     private String name;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
-    private Users usersId;
+    @JoinColumn(name = "user_id")
+    private Users users;
 
     @JoinColumn(nullable = false)
     private Double latitude;
