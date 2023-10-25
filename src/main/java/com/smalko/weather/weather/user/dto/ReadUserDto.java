@@ -1,4 +1,6 @@
 package com.smalko.weather.weather.user.dto;
 
-public class ReadUserDto {
+import java.util.List;
+
+public record ReadUserDto(){
 }
