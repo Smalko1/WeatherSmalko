@@ -1,7 +1,7 @@
 package com.smalko.weather.weather.entity;
 
+import com.smalko.weather.weather.user.UsersEntity;
 import jakarta.persistence.*;
-import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +15,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "session")
+@Table(name = "session", indexes = {
+        @Index(name = "idx_user_id", columnList = "usersEntity")
+})
 public class Session {
 
     @Id
@@ -24,7 +26,7 @@ public class Session {
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    private Users users;
+    private UsersEntity usersEntity;
 
     private LocalDateTime expiresAt;
 }

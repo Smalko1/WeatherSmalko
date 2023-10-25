@@ -1,20 +1,20 @@
 package com.smalko.weather.weather.entity;
 
+import com.smalko.weather.weather.user.UsersEntity;
 import jakarta.persistence.*;
-import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "location")
+@Table(name = "location", indexes = {
+        @Index(name = "idx_location_coords", columnList = "latitude, longitude")
+})
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class Location {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Users users;
+    private UsersEntity usersEntity;
 
     @JoinColumn(nullable = false)
     private Double latitude;
