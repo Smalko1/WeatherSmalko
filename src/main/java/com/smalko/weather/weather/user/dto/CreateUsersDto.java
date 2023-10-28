@@ -1,5 +1,11 @@
 package com.smalko.weather.weather.user.dto;
 
-public record CreateUsersDto(String name, String password) {
+import lombok.Builder;
+import lombok.Data;
 
+@Data
+@Builder
+public class CreateUsersDto{
+    private String name;
+    private String password;
 }

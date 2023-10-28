@@ -6,7 +6,7 @@ import com.smalko.weather.weather.user.dto.ReadUserDto;
 
 public class ReadUserMapper implements Mapper<UsersEntity, ReadUserDto>{
 
-    private static final CreateUserMapper INSTANCE = new CreateUserMapper();
+    private static final ReadUserMapper INSTANCE = new ReadUserMapper();
 
 
     @Override
@@ -14,7 +14,7 @@ public class ReadUserMapper implements Mapper<UsersEntity, ReadUserDto>{
         return null;
     }
 
-    public static CreateUserMapper getInstance() {
+    public static ReadUserMapper getInstance() {
         return INSTANCE;
     }
 }

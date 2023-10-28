@@ -1,9 +1,6 @@
 import com.smalko.weather.weather.entity.Location;
-import com.smalko.weather.weather.entity.Users;
+import com.smalko.weather.weather.user.UsersEntity;
 import com.smalko.weather.weather.util.HibernateUtil;
-import lombok.Cleanup;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 
 public class HibernateTest {
@@ -15,7 +12,7 @@ public class HibernateTest {
 
             session.beginTransaction();
 
-            var users = Users.builder()
+            var users = UsersEntity.builder()
                     .username("SMalko")
                     .password("123")
                     .build();
@@ -24,6 +21,12 @@ public class HibernateTest {
                     .name("Ostrow")
                     .longitude(1.22)
                     .latitude(2.33)
+                    .build());
+
+            users.addLocation(Location.builder()
+                    .name("Kiev")
+                    .longitude(1.44)
+                    .latitude(4.22)
                     .build());
 
             session.merge(users);

@@ -9,8 +9,8 @@ public class CreateUserMapper implements Mapper<CreateUsersDto, UsersEntity>{
     @Override
     public UsersEntity mapFrom(CreateUsersDto object) {
         return UsersEntity.builder()
-                .username(object.name())
-                .password(object.password())
+                .username(object.getName())
+                .password(object.getPassword())
                 .build();
     }
 
