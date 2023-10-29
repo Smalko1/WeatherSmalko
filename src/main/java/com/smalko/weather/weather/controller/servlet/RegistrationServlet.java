@@ -1,7 +1,9 @@
 package com.smalko.weather.weather.controller.servlet;
 
+import com.smalko.weather.weather.user.ResultRegistrationUser;
 import com.smalko.weather.weather.user.UsersService;
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
+import com.smalko.weather.weather.user.validator.Error;
 import com.smalko.weather.weather.util.PathHelper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -9,6 +11,7 @@ import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 @WebServlet(name = "RegistrationServlet", value = "/registration")
 public class RegistrationServlet extends BaseServlet {
@@ -28,7 +31,13 @@ public class RegistrationServlet extends BaseServlet {
                     .name(username)
                     .password(password)
                     .build();
-            UsersService.getInstance().createUser(createUser);
+            var user = UsersService.getInstance().createUser(createUser);
+            if (user.hasErrors()){
+                request.setAttribute("errors", user.getErrors());
+                doGet(request, response);
+                return;
+            }
+            response.sendRedirect( "/home");
         }
     }
 }

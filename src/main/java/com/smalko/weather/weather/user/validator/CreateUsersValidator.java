@@ -9,7 +9,8 @@ public class CreateUsersValidator implements Validator<CreateUsersDto>{
         var validationResult = new ValidationResult();
         if (object.getName().length() < 3 || object.getName().length() > 20){
             validationResult.add(Error.of("IncorrectLength", "Incorrect name length"));
-        }else if (object.getPassword().length() < 3){
+        }
+        if (object.getPassword().length() < 3){
             validationResult.add(Error.of("LittlePassword", "This password is little"));
         }
         return validationResult;
