@@ -26,8 +26,9 @@ public class UsersService {
             users.setPassword(PasswordHashing.hashPassword(users.getPassword()));
 
             //map
-            SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
             var usersEntity = UserMapper.INSTANCE.userToUserEntity(users);
+
+            SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
             var entityManager = (EntityManager) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{EntityManager.class},
                     (proxy, method, args1) -> method.invoke(sessionFactory.getCurrentSession(), args1));
             entityManager.getTransaction().begin();

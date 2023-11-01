@@ -32,7 +32,7 @@ public class UsersEntity {
     private String password;
 
     @Builder.Default
-    @OneToMany(mappedBy = "users", orphanRemoval = true)
+    @OneToMany(mappedBy = "usersEntity", orphanRemoval = true)
     @Cascade(ALL)
     private Set<Location> locations = new HashSet<>();
 

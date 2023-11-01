@@ -2,35 +2,43 @@ package com.smalko.weather.weather.util;
 
 import lombok.experimental.UtilityClass;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @UtilityClass
 public class HibernateUtil {
-    private static final Logger log = LoggerFactory.getLogger(HibernateUtil.class);
-    private static SessionFactory sessionFactory;
+    private static SessionFactory sessionFactory = buildSessionFactory();
 
-    private static SessionFactory createSessionFactory() {
+    private static SessionFactory buildSessionFactory() {
         try {
-            var configuration = new Configuration();
+            if (sessionFactory == null) {
+                StandardServiceRegistry standardRegistry
+                        = new StandardServiceRegistryBuilder()
+                        .configure()
+                        .build();
 
-            configuration.configure();
+                Metadata metadata = new MetadataSources(standardRegistry)
+                        .getMetadataBuilder()
+                        .build();
 
-            return configuration.buildSessionFactory();
+                sessionFactory = metadata.getSessionFactoryBuilder().build();
+            }
+            return sessionFactory;
         } catch (Throwable ex) {
-            log.error("Initial SessionFactory creation failed:" + ex);
             throw new ExceptionInInitializerError(ex);
         }
     }
 
-
     public static SessionFactory getSessionFactory() {
-
-        if (sessionFactory == null) {
-            sessionFactory = createSessionFactory();
-        }
         return sessionFactory;
+    }
 
+    public static void shutdown() {
+        getSessionFactory().close();
     }
 }

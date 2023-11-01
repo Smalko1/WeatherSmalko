@@ -1,13 +1,14 @@
 package com.smalko.weather.weather.user.dto;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Value;
 
 import java.util.List;
 
-@Value
+@Data
 @Builder
 public class ReadUserDto{
-    Integer id;
-    String name;
+    private Integer id;
+    private String name;
 }
