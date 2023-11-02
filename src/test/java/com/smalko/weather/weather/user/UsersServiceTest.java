@@ -1,36 +1,49 @@
 package com.smalko.weather.weather.user;
 
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import com.smalko.weather.weather.util.HibernateUtil;
+import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class UsersServiceTest {
     private static final UsersService USERS_SERVICE = UsersService.getInstance();
+    private static CreateUsersDto createUsersDto;
 
-    @Test
-    void createUserIsSuccessful() {
-        var createUsersDto = CreateUsersDto.builder()
+    @BeforeAll
+    static void setCreateUsersDto(){
+        createUsersDto = CreateUsersDto.builder()
                 .name("Smalko")
                 .password("123")
                 .build();
-
-        var user = USERS_SERVICE.createUser(createUsersDto);
-
-        assertThat(user.hasErrors()).isFalse();
     }
 
     @Test
-    void createUserIsUnsuccessfulNoValid() {
-        var createUsersDto = CreateUsersDto.builder()
+    void registrationUserIsSuccessful() {
+        var resultRegistrationUser = USERS_SERVICE.registrationUser(createUsersDto);
+
+        assertThat(resultRegistrationUser.hasErrors()).isFalse();
+    }
+
+    @Test
+    void registrationUserIsUnsuccessfulNoValid() {
+
+        var isNotValidUserDto = CreateUsersDto.builder()
                 .name("")
-                .password("123")
+                .password("")
                 .build();
+        var resultRegistrationUser = USERS_SERVICE.registrationUser(isNotValidUserDto);
 
-        var user = USERS_SERVICE.createUser(createUsersDto);
+        assertThat(resultRegistrationUser.hasErrors()).isTrue();
+        assertThat(resultRegistrationUser.getErrors().size()).isEqualTo(2);
+    }
 
-        assertThat(user.hasErrors()).isTrue();
+    @Test
+    void registrationUserIsUnsuccessfulNoUnique(){
+
+        USERS_SERVICE.registrationUser(createUsersDto);
+        var resultRegistrationUser = USERS_SERVICE.registrationUser(createUsersDto);
+
+        assertThat(resultRegistrationUser.hasErrors()).isTrue();
     }
 }

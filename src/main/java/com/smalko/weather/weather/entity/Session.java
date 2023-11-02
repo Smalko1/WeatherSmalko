@@ -15,9 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "session", indexes = {
-        @Index(name = "idx_user_id", columnList = "usersEntity")
-})
+@Table(name = "session")
 public class Session {
 
     @Id

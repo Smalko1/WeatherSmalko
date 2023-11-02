@@ -21,16 +21,16 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @JoinColumn(nullable = false)
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false )
     private UsersEntity users;
 
-    @JoinColumn(nullable = false)
+    @Column(nullable = false)
     private Double latitude;
 
-    @JoinColumn(nullable = false)
+    @Column(nullable = false)
     private Double longitude;
 }

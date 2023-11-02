@@ -18,17 +18,15 @@ import static org.hibernate.annotations.CascadeType.ALL;
 @ToString(exclude = "locations")
 @EqualsAndHashCode(exclude = "locations")
 @Entity
-@Table(name = "users", indexes = {
-        @Index(name = "ididx_usernamex", columnList = "username")
-})
+@Table(name = "users")
 public class UsersEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @JoinColumn(nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
-    @JoinColumn(nullable = false)
+    @Column(nullable = false)
     private String password;
 
     @Builder.Default
