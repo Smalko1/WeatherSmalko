@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 @Data
 @Builder
@@ -23,9 +24,9 @@ public class Location {
     @JoinColumn(nullable = false)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UsersEntity usersEntity;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", nullable = false )
+    private UsersEntity users;
 
     @JoinColumn(nullable = false)
     private Double latitude;

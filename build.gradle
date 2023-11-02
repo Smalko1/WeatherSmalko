@@ -49,17 +49,19 @@ dependencies {
     implementation 'org.slf4j:slf4j-reload4j:2.0.9'
     implementation 'org.slf4j:slf4j-api:2.0.9'
 
-    //mapstruct
-    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
-    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
-
-
     //lombok
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
     testCompileOnly 'org.projectlombok:lombok:1.18.28'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+
+    //mapstruct
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:1.5.5.Final"
+
+
 
     testImplementation 'com.h2database:h2:2.2.224'
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")

@@ -19,6 +19,18 @@ class UsersServiceTest {
 
         var user = USERS_SERVICE.createUser(createUsersDto);
 
+        assertThat(user.hasErrors()).isFalse();
+    }
+
+    @Test
+    void createUserIsUnsuccessfulNoValid() {
+        var createUsersDto = CreateUsersDto.builder()
+                .name("")
+                .password("123")
+                .build();
+
+        var user = USERS_SERVICE.createUser(createUsersDto);
+
         assertThat(user.hasErrors()).isTrue();
     }
 }
