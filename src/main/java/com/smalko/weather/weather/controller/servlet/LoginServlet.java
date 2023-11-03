@@ -17,13 +17,6 @@ public class LoginServlet extends BaseServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         super.doPost(request, response);
-        var username = request.getParameter("username");
-        var password = request.getParameter("password");
 
-        if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
-            System.out.println("Hello log");
-            System.out.println(username);
-            System.out.println(password);
-        }
     }
 }

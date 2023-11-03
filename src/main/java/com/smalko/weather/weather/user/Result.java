@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class ResultRegistrationUser{
+public class Result {
     private List<Error> errors;
 
     public boolean hasErrors() {

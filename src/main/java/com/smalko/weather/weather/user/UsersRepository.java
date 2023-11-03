@@ -15,4 +15,15 @@ public class UsersRepository extends RepositoryUtil<Integer, UsersEntity> {
         }
         return instance;
     }
+
+    public UsersEntity findByName(String username) {
+        var criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        var criteria = criteriaBuilder.createQuery(UsersEntity.class);
+        var from = criteria.from(UsersEntity.class);
+
+        criteria.select(from)
+                .where(criteriaBuilder.equal(from.get("username"), username));
+
+        return getEntityManager().createQuery(criteria).getSingleResult();
+    }
 }

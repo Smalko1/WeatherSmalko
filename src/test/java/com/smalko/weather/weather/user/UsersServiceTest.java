@@ -46,4 +46,56 @@ class UsersServiceTest {
 
         assertThat(resultRegistrationUser.hasErrors()).isTrue();
     }
+
+
+    @Test
+    void authenticationUserSuccessful(){
+        var smalko = CreateUsersDto.builder()
+                .name("Smalko")
+                .password("1234")
+                .build();
+        var smalko1 = CreateUsersDto.builder()
+                .name("Smalko")
+                .password("1234")
+                .build();
+        var resultRegistrationUser = USERS_SERVICE.registrationUser(smalko);
+        var resultAuthenticationUser = USERS_SERVICE.authenticationUser(smalko1);
+
+        assertThat(resultRegistrationUser.hasErrors()).isFalse();
+        assertThat(resultAuthenticationUser.hasErrors()).isFalse();
+    }
+
+    @Test
+    void authenticationUserUnSuccessfulInCorrectName(){
+        var smalko = CreateUsersDto.builder()
+                .name("Smalko")
+                .password("1234")
+                .build();
+        var smalko1 = CreateUsersDto.builder()
+                .name("Smalko1")
+                .password("1234")
+                .build();
+        var resultRegistrationUser = USERS_SERVICE.registrationUser(smalko);
+        var resultAuthenticationUser = USERS_SERVICE.authenticationUser(smalko1);
+
+        assertThat(resultRegistrationUser.hasErrors()).isFalse();
+        assertThat(resultAuthenticationUser.hasErrors()).isTrue();
+    }
+
+    @Test
+    void authenticationUserUnSuccessfulByDifferentPasswords(){
+        var smalko = CreateUsersDto.builder()
+                .name("Smalko")
+                .password("1234")
+                .build();
+        var smalko1 = CreateUsersDto.builder()
+                .name("Smalko")
+                .password("1235")
+                .build();
+        var resultRegistrationUser = USERS_SERVICE.registrationUser(smalko);
+        var resultAuthenticationUser = USERS_SERVICE.authenticationUser(smalko1);
+
+        assertThat(resultRegistrationUser.hasErrors()).isFalse();
+        assertThat(resultAuthenticationUser.hasErrors()).isTrue();
+    }
 }
