@@ -28,7 +28,7 @@ public class RegistrationServlet extends BaseServlet {
                     .password(password)
                     .build();
             var user = UsersService.getInstance().registrationUser(createUser);
-            if (user.hasErrors()){
+            if (!user.isSuccess()){
                 request.setAttribute("errors", user.getErrors());
                 doGet(request, response);
                 return;

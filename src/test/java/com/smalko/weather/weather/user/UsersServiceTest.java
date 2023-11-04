@@ -22,7 +22,7 @@ class UsersServiceTest {
     void registrationUserIsSuccessful() {
         var resultRegistrationUser = USERS_SERVICE.registrationUser(createUsersDto);
 
-        assertThat(resultRegistrationUser.hasErrors()).isFalse();
+        assertThat(resultRegistrationUser.isSuccess()).isTrue();
     }
 
     @Test
@@ -34,7 +34,7 @@ class UsersServiceTest {
                 .build();
         var resultRegistrationUser = USERS_SERVICE.registrationUser(isNotValidUserDto);
 
-        assertThat(resultRegistrationUser.hasErrors()).isTrue();
+        assertThat(resultRegistrationUser.isSuccess()).isFalse();
         assertThat(resultRegistrationUser.getErrors().size()).isEqualTo(2);
     }
 
@@ -44,7 +44,7 @@ class UsersServiceTest {
         USERS_SERVICE.registrationUser(createUsersDto);
         var resultRegistrationUser = USERS_SERVICE.registrationUser(createUsersDto);
 
-        assertThat(resultRegistrationUser.hasErrors()).isTrue();
+        assertThat(resultRegistrationUser.isSuccess()).isFalse();
     }
 
 
@@ -61,8 +61,8 @@ class UsersServiceTest {
         var resultRegistrationUser = USERS_SERVICE.registrationUser(smalko);
         var resultAuthenticationUser = USERS_SERVICE.authenticationUser(smalko1);
 
-        assertThat(resultRegistrationUser.hasErrors()).isFalse();
-        assertThat(resultAuthenticationUser.hasErrors()).isFalse();
+        assertThat(resultRegistrationUser.isSuccess()).isTrue();
+        assertThat(resultAuthenticationUser.isSuccess()).isTrue();
     }
 
     @Test
@@ -78,8 +78,8 @@ class UsersServiceTest {
         var resultRegistrationUser = USERS_SERVICE.registrationUser(smalko);
         var resultAuthenticationUser = USERS_SERVICE.authenticationUser(smalko1);
 
-        assertThat(resultRegistrationUser.hasErrors()).isFalse();
-        assertThat(resultAuthenticationUser.hasErrors()).isTrue();
+        assertThat(resultRegistrationUser.isSuccess()).isTrue();
+        assertThat(resultAuthenticationUser.isSuccess()).isFalse();
     }
 
     @Test
@@ -95,7 +95,7 @@ class UsersServiceTest {
         var resultRegistrationUser = USERS_SERVICE.registrationUser(smalko);
         var resultAuthenticationUser = USERS_SERVICE.authenticationUser(smalko1);
 
-        assertThat(resultRegistrationUser.hasErrors()).isFalse();
-        assertThat(resultAuthenticationUser.hasErrors()).isTrue();
+        assertThat(resultRegistrationUser.isSuccess()).isTrue();
+        assertThat(resultAuthenticationUser.isSuccess()).isFalse();
     }
 }

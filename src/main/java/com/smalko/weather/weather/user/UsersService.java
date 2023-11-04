@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UsersService {
@@ -23,7 +24,7 @@ public class UsersService {
     private static final Logger log = LoggerFactory.getLogger(UsersService.class);
 
     public Result registrationUser(CreateUsersDto users) {
-        Result result;
+        List<Error> errors = new ArrayList<>();
 
         var validationResult = validator.isValid(users);
         if (validationResult.isValid()) {
@@ -44,27 +45,24 @@ public class UsersService {
             try {
                 UsersRepository.getInstance(entityManager).save(usersEntity);
                 log.info("Registration new users is successful");
-                result = Result.builder().
-                        errors(List.of()).build();
                 entityManager.getTransaction().commit();
             } catch (HibernateException | UndeclaredThrowableException e) {
                 log.error("The name has already been taken by another user", e);
-                result = Result.builder()
-                        .errors(List.of(Error.of("ConstraintViolationException", "The name has already been taken by another user")))
-                        .build();
+                errors.add(Error.of("ConstraintViolationException", "The name has already been taken by another user"));
+
                 entityManager.getTransaction().rollback();
             }
         } else {
             log.error("user is not valid");
-            result = Result.builder()
-                    .errors(validationResult.getErrors())
-                    .build();
+            errors = validationResult.getErrors();
+
+
         }
-        return result;
+        return Result.result(errors);
     }
 
     public Result authenticationUser(CreateUsersDto users) {
-        Result result;
+        List<Error> errors = new ArrayList<>();
 
         var validationResult = validator.isValid(users);
         if (validationResult.isValid()) {
@@ -81,29 +79,25 @@ public class UsersService {
             //usersEntity отправляю имя для проверки совпадения в базе данных
             try {
                 var maybeUser = UsersRepository.getInstance(entityManager).findByName(usersEntity.getUsername());
+                log.info("The takeaway {} matches the name", maybeUser);
                 boolean pass = PasswordHashing.checkPassword(usersEntity.getPassword(), maybeUser.getPassword());
+                log.info("{} - if true, the user is authenticated, if false, the user failed password verification", pass);
                 entityManager.getTransaction().commit();
-                if (pass) {
-                    result = Result.builder()
-                            .errors(List.of())
-                            .build();
-                }else
-                    result = Result.builder()
-                            .errors(List.of(Error.of("IncorrectPassword", "Incorrect password"))).build();
+
+                if (!pass){
+                    errors.add(Error.of("IncorrectPassword", "Incorrect password"));
+                }
 
             }catch (NoResultException e){
-                result = Result.builder()
-                        .errors(List.of(Error.of("IncorrectAuthentication", "Incorrect login or password")))
-                        .build();
+                log.error("Incorrect login or password", e);
+                errors.add(Error.of("IncorrectAuthentication", "Incorrect login or password"));
                 entityManager.getTransaction().commit();
             }
         } else {
             log.error("user is not valid");
-            result = Result.builder()
-                    .errors(validationResult.getErrors())
-                    .build();
+            errors = validationResult.getErrors();
         }
-        return result;
+        return Result.result(errors);
     }
 
 
