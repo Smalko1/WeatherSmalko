@@ -1,6 +1,6 @@
 package com.smalko.weather.weather.user;
 
-import com.smalko.weather.weather.entity.Location;
+import com.smalko.weather.weather.location.Location;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;

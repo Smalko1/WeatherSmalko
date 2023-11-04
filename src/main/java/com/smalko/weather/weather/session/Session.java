@@ -1,4 +1,4 @@
-package com.smalko.weather.weather.entity;
+package com.smalko.weather.weather.session;
 
 import com.smalko.weather.weather.user.UsersEntity;
 import jakarta.persistence.*;

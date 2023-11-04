@@ -2,14 +2,9 @@ package com.smalko.weather.weather.user.mapper;
 
 import com.smalko.weather.weather.user.UsersEntity;
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
-import com.smalko.weather.weather.user.dto.ReadUserDto;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserMapperTest {
 
@@ -34,7 +29,7 @@ class UserMapperTest {
                 .password("123")
                 .build();
 
-        var entity = UserMapper.INSTANCE.userToUserEntity(usersDto);
+        var entity = UserMapper.INSTANCE.userCreateDtoToUserEntity(usersDto);
 
         assertThat(entity).isNotNull();
         assertThat(entity.getUsername()).isEqualTo(usersDto.getName());

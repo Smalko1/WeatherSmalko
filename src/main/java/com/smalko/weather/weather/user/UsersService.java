@@ -11,6 +11,8 @@ import com.smalko.weather.weather.util.HibernateUtil;
 import com.smalko.weather.weather.util.PasswordHashing;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -20,7 +22,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.List;
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UsersService {
     private static final UsersService INSTANCE = new UsersService();
     private static final CreateUsersValidator validator = CreateUsersValidator.getInstance();
@@ -37,7 +39,7 @@ public class UsersService {
 
             log.info("user has new hash password");
             //map
-            var usersEntity = UserMapper.INSTANCE.userToUserEntity(users);
+            var usersEntity = UserMapper.INSTANCE.userCreateDtoToUserEntity(users);
             log.info("mapping user is userEntity");
 
             var entityManager = (EntityManager) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{EntityManager.class},
@@ -73,7 +75,7 @@ public class UsersService {
             log.info("user is valid");
 
             //map
-            var usersEntity = UserMapper.INSTANCE.userToUserEntity(users);
+            var usersEntity = UserMapper.INSTANCE.userCreateDtoToUserEntity(users);
             log.info("mapping user is userEntity");
 
             var entityManager = (EntityManager) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{EntityManager.class},

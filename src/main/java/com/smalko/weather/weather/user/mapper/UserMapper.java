@@ -17,5 +17,10 @@ public interface UserMapper {
     @Mapping(target = "locations", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "name", target = "username")
-    UsersEntity userToUserEntity(CreateUsersDto createUsersDto);
+    UsersEntity userCreateDtoToUserEntity(CreateUsersDto createUsersDto);
+
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "locations", ignore = true)
+    @Mapping(source = "name", target = "username")
+    UsersEntity userReadDtoToUserEntity(ReadUserDto readUserDto);
 }

@@ -1,5 +1,7 @@
 package com.smalko.weather.weather.controller.servlet;
 
+import com.smalko.weather.weather.session.Session;
+import com.smalko.weather.weather.session.SessionService;
 import com.smalko.weather.weather.user.UsersService;
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
 import com.smalko.weather.weather.util.PathHelper;
@@ -28,12 +30,11 @@ public class LoginServlet extends BaseServlet {
 
         var result = UsersService.getInstance().authenticationUser(userLogin);
         if (result.isSuccess()){
-            request.getSession().setAttribute("name", result.getUser());
+            var session = request.getSession();
+            session.setAttribute("user", result.getUser());
         }else {
             request.setAttribute("errors", result.getErrors());
             doGet(request, response);
         }
-
-
     }
 }
