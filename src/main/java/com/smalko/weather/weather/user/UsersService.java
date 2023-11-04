@@ -1,7 +1,10 @@
 package com.smalko.weather.weather.user;
 
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
+import com.smalko.weather.weather.user.dto.ReadUserDto;
 import com.smalko.weather.weather.user.mapper.UserMapper;
+import com.smalko.weather.weather.user.result.LoginResult;
+import com.smalko.weather.weather.user.result.RegistrationResult;
 import com.smalko.weather.weather.user.validator.CreateUsersValidator;
 import com.smalko.weather.weather.user.validator.Error;
 import com.smalko.weather.weather.util.HibernateUtil;
@@ -23,7 +26,7 @@ public class UsersService {
     private static final CreateUsersValidator validator = CreateUsersValidator.getInstance();
     private static final Logger log = LoggerFactory.getLogger(UsersService.class);
 
-    public Result registrationUser(CreateUsersDto users) {
+    public RegistrationResult registrationUser(CreateUsersDto users) {
         List<Error> errors = new ArrayList<>();
 
         var validationResult = validator.isValid(users);
@@ -58,11 +61,12 @@ public class UsersService {
 
 
         }
-        return Result.result(errors);
+        return RegistrationResult.result(errors);
     }
 
-    public Result authenticationUser(CreateUsersDto users) {
+    public LoginResult authenticationUser(CreateUsersDto users) {
         List<Error> errors = new ArrayList<>();
+        ReadUserDto readUserDto = null;
 
         var validationResult = validator.isValid(users);
         if (validationResult.isValid()) {
@@ -84,9 +88,10 @@ public class UsersService {
                 log.info("{} - if true, the user is authenticated, if false, the user failed password verification", pass);
                 entityManager.getTransaction().commit();
 
-                if (!pass){
+                if (pass){
+                    readUserDto = UserMapper.INSTANCE.userToUserDto(maybeUser);
+                }else
                     errors.add(Error.of("IncorrectPassword", "Incorrect password"));
-                }
 
             }catch (NoResultException e){
                 log.error("Incorrect login or password", e);
@@ -97,7 +102,7 @@ public class UsersService {
             log.error("user is not valid");
             errors = validationResult.getErrors();
         }
-        return Result.result(errors);
+        return LoginResult.result(readUserDto, errors);
     }
 
 
