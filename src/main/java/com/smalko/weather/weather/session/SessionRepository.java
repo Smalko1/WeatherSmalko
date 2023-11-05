@@ -1,11 +1,14 @@
 package com.smalko.weather.weather.session;
 
-import com.smalko.weather.weather.user.UsersEntity;
-import com.smalko.weather.weather.user.UsersRepository;
 import com.smalko.weather.weather.util.repository.RepositoryUtil;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
-public class SessionRepository extends RepositoryUtil<Integer, Session> {
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+public class SessionRepository extends RepositoryUtil<UUID, Session> {
 
     private static SessionRepository instance;
     public SessionRepository(Class<Session> clazz, EntityManager entityManager) {
@@ -17,5 +20,18 @@ public class SessionRepository extends RepositoryUtil<Integer, Session> {
             instance = new SessionRepository(Session.class, entityManager);
         }
         return instance;
+    }
+
+    public List<Session> findAllExpiredSession() {
+        LocalDateTime now = LocalDateTime.now();
+        var criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        var criteria = criteriaBuilder.createQuery(Session.class);
+        var from = criteria.from(Session.class);
+
+        criteria.select(from)
+                .where(criteriaBuilder.lessThan(from.get("expiresat"), now));
+
+        var query = getEntityManager().createQuery(criteria);
+        return query.getResultList();
     }
 }

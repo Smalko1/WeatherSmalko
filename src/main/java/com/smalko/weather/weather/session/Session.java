@@ -19,11 +19,11 @@ import java.util.UUID;
 public class Session {
 
     @Id
-    @Column(columnDefinition = "BINARY(16)")
+    @GeneratedValue(generator = "BINARY(16)")
     private UUID id;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", unique = true, nullable = false)
     private UsersEntity usersEntity;
 
     private LocalDateTime expiresAt;

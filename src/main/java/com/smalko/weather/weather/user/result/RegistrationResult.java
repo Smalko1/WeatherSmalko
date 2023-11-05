@@ -2,13 +2,14 @@ package com.smalko.weather.weather.user.result;
 
 
 import com.smalko.weather.weather.user.validator.Error;
+import lombok.Getter;
 
 import java.util.Collections;
 import java.util.List;
-
+@Getter
 public class RegistrationResult {
-    private boolean success;
-    private List<Error> errors;
+    private final boolean success;
+    private final List<Error> errors;
 
 
     public static RegistrationResult result(List<Error> errors) {
@@ -20,11 +21,4 @@ public class RegistrationResult {
         this.errors = errors;
     }
 
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public List<Error> getErrors() {
-        return errors;
-    }
 }
