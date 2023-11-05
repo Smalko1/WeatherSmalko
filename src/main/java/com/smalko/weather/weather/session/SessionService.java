@@ -4,6 +4,7 @@ import com.smalko.weather.weather.session.dto.CreateSessionDto;
 import com.smalko.weather.weather.session.dto.ReadSessionDto;
 import com.smalko.weather.weather.session.mapper.SessionMapper;
 import com.smalko.weather.weather.session.result.SaveSessionResult;
+import com.smalko.weather.weather.user.UsersEntity;
 import com.smalko.weather.weather.user.dto.ReadUserDto;
 import com.smalko.weather.weather.user.mapper.UserMapper;
 import com.smalko.weather.weather.util.HibernateUtil;
