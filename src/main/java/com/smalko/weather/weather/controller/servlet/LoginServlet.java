@@ -35,7 +35,7 @@ public class LoginServlet extends BaseServlet {
         var loginResult = UsersService.getInstance().authenticationUser(userLogin);
         if (loginResult.isSuccess()){
             var session = request.getSession();
-            session.setAttribute("user", loginResult.getUser());
+            session.setAttribute("user", loginResult.getUser().getName());
             createCookie(response, loginResult);
         }else {
             request.setAttribute("errors", loginResult.getErrors());
