@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.mapping.ToOne;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,14 +16,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "session")
+@Table(name = "session", indexes = {
+        @Index(name = "expiresAt_index", columnList = "expiresAt")
+})
 public class Session {
 
     @Id
-    @GeneratedValue(generator = "BINARY(16)")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private UsersEntity usersEntity;
 

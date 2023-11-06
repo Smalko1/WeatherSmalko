@@ -1,10 +1,9 @@
 package com.smalko.weather.weather.session;
 
 import com.smalko.weather.weather.session.dto.CreateSessionDto;
-import com.smalko.weather.weather.session.dto.ReadSessionDto;
 import com.smalko.weather.weather.session.mapper.SessionMapper;
+import com.smalko.weather.weather.session.result.GetSessionResult;
 import com.smalko.weather.weather.session.result.SaveSessionResult;
-import com.smalko.weather.weather.user.UsersEntity;
 import com.smalko.weather.weather.user.dto.ReadUserDto;
 import com.smalko.weather.weather.user.mapper.UserMapper;
 import com.smalko.weather.weather.util.HibernateUtil;
@@ -12,6 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.TransactionException;
 import org.slf4j.Logger;
@@ -46,6 +46,25 @@ public class SessionService {
             entityManager.getTransaction().rollback();
             log.error("Create error", e);
             return SaveSessionResult.resultUnSuccessful();
+        }
+    }
+
+    public GetSessionResult getSessionById(int sessionId) {
+        var entityManager = (EntityManager) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{EntityManager.class},
+                (proxy, method, args1) -> method.invoke(HibernateUtil.getSessionFactory().getCurrentSession(), args1));
+        entityManager.getTransaction().begin();
+        try {
+            var session = SessionRepository.getInstance(entityManager).findById(sessionId);
+            entityManager.getTransaction().commit();
+            log.info("Retrieving a session by its id");
+            return session
+                    .map(value -> GetSessionResult.result(UserMapper.INSTANCE.userToUserDto(value.getUsersEntity())))
+                    .orElseGet(GetSessionResult::result);
+
+        }catch (NoResultException | HibernateException e){
+            entityManager.getTransaction().rollback();
+            log.error("An error occurred while taking a session", e);
+            return GetSessionResult.result();
         }
     }
 

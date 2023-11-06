@@ -5,10 +5,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-public class SessionRepository extends RepositoryUtil<UUID, Session> {
+public class SessionRepository extends RepositoryUtil<Integer, Session> {
 
     private static SessionRepository instance;
     public SessionRepository(Class<Session> clazz, EntityManager entityManager) {
@@ -29,9 +31,13 @@ public class SessionRepository extends RepositoryUtil<UUID, Session> {
         var from = criteria.from(Session.class);
 
         criteria.select(from)
-                .where(criteriaBuilder.lessThan(from.get("expiresat"), now));
+                .orderBy(criteriaBuilder.asc(from.get("expiresAt")));
 
-        var query = getEntityManager().createQuery(criteria);
-        return query.getResultList();
+        return getEntityManager()
+                .createQuery(criteria)
+                .getResultList()
+                .stream()
+                .takeWhile(session -> !session.getExpiresAt().isBefore(now))
+                .toList();
     }
 }
