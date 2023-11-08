@@ -1,8 +1,11 @@
 package com.smalko.weather.weather.user;
 
+import com.smalko.weather.weather.location.Location;
+import com.smalko.weather.weather.session.result.GetSessionResult;
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
 import com.smalko.weather.weather.user.dto.ReadUserDto;
 import com.smalko.weather.weather.user.mapper.UserMapper;
+import com.smalko.weather.weather.user.result.LocationsUserResult;
 import com.smalko.weather.weather.user.result.LoginResult;
 import com.smalko.weather.weather.user.result.RegistrationResult;
 import com.smalko.weather.weather.user.validator.CreateUsersValidator;
@@ -22,6 +25,11 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UsersService {
     private static final UsersService INSTANCE = new UsersService();
@@ -39,8 +47,7 @@ public class UsersService {
 
             log.info("user has new hash password");
             //map
-            var usersEntity = UserMapper.INSTANCE.userCreateDtoToUserEntity(users);
-            log.info("mapping user is userEntity");
+            UsersEntity usersEntity = mappdUsersEntity(users);
 
             var entityManager = (EntityManager) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{EntityManager.class},
                     (proxy, method, args1) -> method.invoke(HibernateUtil.getSessionFactory().getCurrentSession(), args1));
@@ -75,8 +82,7 @@ public class UsersService {
             log.info("user is valid");
 
             //map
-            var usersEntity = UserMapper.INSTANCE.userCreateDtoToUserEntity(users);
-            log.info("mapping user is userEntity");
+            UsersEntity usersEntity = mappdUsersEntity(users);
 
             var entityManager = (EntityManager) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{EntityManager.class},
                     (proxy, method, args1) -> method.invoke(HibernateUtil.getSessionFactory().getCurrentSession(), args1));
@@ -90,12 +96,12 @@ public class UsersService {
                 log.info("{} - if true, the user is authenticated, if false, the user failed password verification", pass);
                 entityManager.getTransaction().commit();
 
-                if (pass){
+                if (pass) {
                     readUserDto = UserMapper.INSTANCE.userToUserDto(maybeUser);
-                }else
+                } else
                     errors.add(Error.of("IncorrectPassword", "Incorrect password"));
 
-            }catch (NoResultException e){
+            } catch (NoResultException e) {
                 log.error("Incorrect login or password", e);
                 errors.add(Error.of("IncorrectAuthentication", "Incorrect login or password"));
                 entityManager.getTransaction().commit();
@@ -107,8 +113,31 @@ public class UsersService {
         return LoginResult.result(readUserDto, errors);
     }
 
+    public LocationsUserResult getLocationsInUser(Integer userId){
+        var entityManager = (EntityManager) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{EntityManager.class},
+                (proxy, method, args1) -> method.invoke(HibernateUtil.getSessionFactory().getCurrentSession(), args1));
+        log.info("Create entityManager");
+        entityManager.getTransaction().begin();
+        try {
+            var usersEntity = UsersRepository.getInstance(entityManager).findById(userId);
+            entityManager.getTransaction().commit();
+
+            return usersEntity.map(users -> LocationsUserResult.result(users.getLocations()))
+                    .orElseGet(LocationsUserResult::result);
+        }catch (NoResultException | HibernateException e){
+            entityManager.getTransaction().rollback();
+            return LocationsUserResult.result();
+        }
+    }
+
 
     public static UsersService getInstance() {
         return INSTANCE;
+    }
+
+    private static UsersEntity mappdUsersEntity(CreateUsersDto users) {
+        var usersEntity = UserMapper.INSTANCE.userCreateDtoToUserEntity(users);
+        log.info("mapping user is userEntity");
+        return usersEntity;
     }
 }

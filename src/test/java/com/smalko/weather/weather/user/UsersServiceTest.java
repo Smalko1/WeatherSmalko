@@ -1,7 +1,6 @@
 package com.smalko.weather.weather.user;
 
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
-import com.smalko.weather.weather.util.HibernateUtil;
 import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.*;

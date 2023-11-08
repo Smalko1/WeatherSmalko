@@ -1,10 +1,7 @@
 package com.smalko.weather.weather.session;
 
-import com.smalko.weather.weather.session.result.SaveSessionResult;
 import com.smalko.weather.weather.user.UsersService;
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
-import com.smalko.weather.weather.user.dto.ReadUserDto;
-import com.smalko.weather.weather.user.result.RegistrationResult;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;

@@ -9,12 +9,16 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet(name = "RegistrationServlet", value = UrlPath.REGISTRATION)
 public class RegistrationServlet extends BaseServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.getRequestDispatcher(PathHelper.gatPath("registration")).include(request, response);
+        super.doGet(request, response);
+        super.processTemplate("registration", request, response);
+
     }
 
     @Override
