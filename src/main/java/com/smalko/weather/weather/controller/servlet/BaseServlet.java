@@ -7,7 +7,6 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
-import org.thymeleaf.web.IWebApplication;
 import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
@@ -69,7 +68,7 @@ public class BaseServlet extends HttpServlet {
             MODEL.put("loggedIn", true);
     }
 
-    protected void putModel(String key, Object value){
+    protected void putAttributeInModel(String key, Object value){
         MODEL.put(key, value);
     }
 }

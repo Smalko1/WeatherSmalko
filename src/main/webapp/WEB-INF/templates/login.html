@@ -38,6 +38,11 @@
                             <button class="btn btn-primary" type="submit"><span></span>log in</button>
                         </div>
                     </form>
+                    <ul>
+                        <li th:each="error : ${model.errors}">
+                            <span th:text="${error.getMessage()}"></span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

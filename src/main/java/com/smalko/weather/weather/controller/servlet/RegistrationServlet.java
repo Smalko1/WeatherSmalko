@@ -2,15 +2,12 @@ package com.smalko.weather.weather.controller.servlet;
 
 import com.smalko.weather.weather.user.UsersService;
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
-import com.smalko.weather.weather.util.PathHelper;
 import com.smalko.weather.weather.util.UrlPath;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @WebServlet(name = "RegistrationServlet", value = UrlPath.REGISTRATION)
 public class RegistrationServlet extends BaseServlet {
@@ -31,10 +28,10 @@ public class RegistrationServlet extends BaseServlet {
                 .build();
         var result = UsersService.getInstance().registrationUser(createUser);
         if (!result.isSuccess()) {
-            request.setAttribute("errors", result.getErrors());
+            putAttributeInModel("errors", result.getErrors());
             doGet(request, response);
         }
+        putAttributeInModel("errors", result.getErrors());
         response.sendRedirect(UrlPath.LOGIN);
-
     }
 }

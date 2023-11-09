@@ -4,7 +4,6 @@ import com.smalko.weather.weather.session.SessionService;
 import com.smalko.weather.weather.user.UsersService;
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
 import com.smalko.weather.weather.user.result.LoginResult;
-import com.smalko.weather.weather.util.PathHelper;
 import com.smalko.weather.weather.util.UrlPath;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -12,8 +11,6 @@ import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 
 @WebServlet(name = "LoginServlet", value = UrlPath.LOGIN)
 public class LoginServlet extends BaseServlet {
@@ -38,8 +35,9 @@ public class LoginServlet extends BaseServlet {
             var session = request.getSession();
             session.setAttribute("userId", loginResult.getUser().getId());
             createCookie(response, loginResult);
+            putAttributeInModel("errors", loginResult.getErrors());
         }else {
-            request.setAttribute("errors", loginResult.getErrors());
+            putAttributeInModel("errors", loginResult.getErrors());
             doGet(request, response);
         }
     }
