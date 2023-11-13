@@ -4,21 +4,24 @@ import com.smalko.weather.weather.location.HttpStatus;
 import com.smalko.weather.weather.location.json.SearchCity;
 import lombok.Getter;
 
+import java.util.Collections;
+import java.util.List;
+
 @Getter
 public class SearchCityResult {
 
-    private final SearchCity searchCity;
+    private final List<SearchCity> searchCity;
     private final HttpStatus status;
 
-    public static void searchCityResult(SearchCity searchCity){
-        new SearchCityResult(searchCity, HttpStatus.HTTP_OK);
+    public static SearchCityResult createSearchCityResult(List<SearchCity> searchCity){
+        return new SearchCityResult(searchCity, HttpStatus.HTTP_OK);
     }
 
-    public static void searchCityResult(HttpStatus status){
-        new SearchCityResult(null, status);
+    public static SearchCityResult createSearchCityResult(HttpStatus status){
+        return new SearchCityResult(Collections.emptyList(), status);
     }
 
-    private SearchCityResult(SearchCity searchCity, HttpStatus status) {
+    private SearchCityResult(List<SearchCity> searchCity, HttpStatus status) {
         this.searchCity = searchCity;
         this.status = status;
     }

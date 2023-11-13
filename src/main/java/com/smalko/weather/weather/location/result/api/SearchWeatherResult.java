@@ -9,12 +9,12 @@ public class SearchWeatherResult {
     private final SearchWeatherForCoordinates weather;
     private final HttpStatus status;
 
-    public static void searchWeatherResult(SearchWeatherForCoordinates weather){
-        new SearchWeatherResult(weather, HttpStatus.HTTP_OK);
+    public static SearchWeatherResult searchWeatherResult(SearchWeatherForCoordinates weather){
+        return new SearchWeatherResult(weather, HttpStatus.HTTP_OK);
     };
 
-    public static void searchWeatherResult(HttpStatus status){
-        new SearchWeatherResult(null, status);
+    public static SearchWeatherResult searchWeatherResult(HttpStatus status){
+        return new SearchWeatherResult(null, status);
     };
 
 
