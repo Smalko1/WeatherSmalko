@@ -29,9 +29,8 @@ public class RegistrationServlet extends BaseServlet {
         var result = UsersService.getInstance().registrationUser(createUser);
         if (!result.isSuccess()) {
             putAttributeInModel("errors", result.getErrors());
-            doGet(request, response);
+            super.processTemplate("registration", request, response);
         }
-        putAttributeInModel("errors", result.getErrors());
         response.sendRedirect(UrlPath.LOGIN);
     }
 }

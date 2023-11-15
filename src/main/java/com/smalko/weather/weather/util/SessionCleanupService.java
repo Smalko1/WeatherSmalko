@@ -13,10 +13,10 @@ public class SessionCleanupService {
 
     public static void startSessionCleanupTask() {
         // Запустить задачу каждый час для очистки устаревших сессий
-        scheduler.scheduleAtFixedRate(SessionCleanupService::cleanupExpiredSessions, 0, 1, TimeUnit.HOURS);
+        scheduler.scheduleAtFixedRate(SessionCleanupService::cleanupExpiredSessions, 0, 1, TimeUnit.MINUTES);
     }
 
-    private static void cleanupExpiredSessions() {
+    static void cleanupExpiredSessions() {
         // Ваш код для удаления устаревших сессий из базы данных
         SessionService.getInstance().takingAndRemoveSessions();
     }

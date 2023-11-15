@@ -20,7 +20,7 @@ public class AuthorizationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         var uri = ((HttpServletRequest) servletRequest).getRequestURI();
-        if (isPublicPath(uri) || isUserLoggedIn(servletRequest)) {
+        if (isUserLoggedIn(servletRequest) || isPublicPath(uri)) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             reject(servletRequest, servletResponse);
@@ -29,13 +29,14 @@ public class AuthorizationFilter implements Filter {
 
     private boolean isUserLoggedIn(ServletRequest servletRequest) {
         var user = (ReadUserDto) ((HttpServletRequest) servletRequest).getSession().getAttribute("user");
-        if (user != null) {
+        if (user == null) {
             String sessionId = findSessionIdInCookies((HttpServletRequest) servletRequest);
             if (sessionId != null){
                 var result = SessionService.getInstance().getSessionById(Integer.parseInt(sessionId));
                 if (result.isSuccessful()) {
                     var session = ((HttpServletRequest) servletRequest).getSession();
                     session.setAttribute("userId", result.getReadUserDto().getId());
+                    return true;
                 }
             }
         }

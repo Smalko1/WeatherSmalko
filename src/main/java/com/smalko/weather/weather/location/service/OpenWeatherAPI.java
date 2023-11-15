@@ -2,10 +2,10 @@ package com.smalko.weather.weather.location.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smalko.weather.weather.location.HttpStatus;
-import com.smalko.weather.weather.location.json.SearchCity;
+import com.smalko.weather.weather.location.json.SearchCityList;
 import com.smalko.weather.weather.location.json.SearchWeatherForCoordinates;
 import com.smalko.weather.weather.location.result.api.SearchCityResult;
-import com.smalko.weather.weather.location.result.api.SearchWeatherResult;
+import com.smalko.weather.weather.location.result.SearchWeatherResult;
 import com.smalko.weather.weather.util.PropertiesUtil;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
@@ -20,16 +20,16 @@ import java.time.Duration;
 import java.util.List;
 
 import static com.smalko.weather.weather.location.result.api.SearchCityResult.*;
-import static com.smalko.weather.weather.location.result.api.SearchWeatherResult.*;
+import static com.smalko.weather.weather.location.result.SearchWeatherResult.*;
 import static java.net.HttpURLConnection.*;
 import static java.time.temporal.ChronoUnit.*;
 
 public class OpenWeatherAPI {
-    public static final int HTTP_MANY_REQUESTS = 429;
+    private static final int HTTP_MANY_REQUESTS = 429;
     private static final Logger log = LoggerFactory.getLogger(OpenWeatherAPI.class);
     private static final String WEATHER_REQUEST_BY_COORDINATES =
             "https://api.openweathermap.org/data/3.0/onecall?lat=%s&lon=%s&units=metric&exclude=minutely,hourly,daily,alerts&appid=%s";
-    public static final String SEARCH_COORDINATES_FOR_CITY =
+    private static final String SEARCH_COORDINATES_FOR_CITY =
             "http://api.openweathermap.org/geo/1.0/direct?q=%s&limit=5&appid=%s";
 
 
@@ -65,9 +65,9 @@ public class OpenWeatherAPI {
             case HTTP_UNAUTHORIZED -> searchWeatherResult = searchWeatherResult(HttpStatus.HTTP_UNAUTHORIZED);
             case HTTP_NOT_FOUND -> searchWeatherResult = searchWeatherResult(HttpStatus.HTTP_NOT_FOUND);
             case HTTP_MANY_REQUESTS -> searchWeatherResult = searchWeatherResult(HttpStatus.HTTP_MANY_REQUESTS);
-            default -> searchWeatherResult = searchWeatherResult(
-                    convertingJsonStringToJavaObject(httpRequest, SearchWeatherForCoordinates.class)
-            );
+            default -> {
+                searchWeatherResult = searchWeatherResult(convertingJsonStringToJavaObject(httpRequest, SearchWeatherForCoordinates.class));
+            }
         }
         return searchWeatherResult;
 
@@ -89,7 +89,7 @@ public class OpenWeatherAPI {
             case HTTP_NOT_FOUND -> searchCityResult = createSearchCityResult(HttpStatus.HTTP_NOT_FOUND);
             case HTTP_MANY_REQUESTS -> searchCityResult = createSearchCityResult(HttpStatus.HTTP_MANY_REQUESTS);
             default -> searchCityResult = createSearchCityResult(
-                    List.of(convertingJsonStringToJavaObject(httpRequest, SearchCity[].class))
+                    List.of(convertingJsonStringToJavaObject(httpRequest, SearchCityList[].class))
             );
 
         }

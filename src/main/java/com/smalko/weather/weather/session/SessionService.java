@@ -76,8 +76,11 @@ public class SessionService {
         try {
             var expiredSessionSession = SessionRepository.getInstance(entityManager).findAllExpiredSession();
             log.info("Get expired session, {}", expiredSessionSession);
+            entityManager.getTransaction().commit();
             for (Session session : expiredSessionSession) {
-                SessionRepository.getInstance(entityManager).delete(session.getId());
+                entityManager.getTransaction().begin();
+                SessionRepository.getInstance(entityManager).deleteEntity(session);
+                entityManager.getTransaction().commit();
             }
             entityManager.getTransaction().commit();
         }catch (NoResultException | TransactionException e){

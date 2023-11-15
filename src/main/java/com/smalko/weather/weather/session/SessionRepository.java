@@ -33,11 +33,17 @@ public class SessionRepository extends RepositoryUtil<Integer, Session> {
         criteria.select(from)
                 .orderBy(criteriaBuilder.asc(from.get("expiresAt")));
 
-        return getEntityManager()
-                .createQuery(criteria)
-                .getResultList()
-                .stream()
-                .takeWhile(session -> !session.getExpiresAt().isBefore(now))
-                .toList();
+        var resultList = getEntityManager().createQuery(criteria)
+                .getResultList();
+
+        List<Session> result = new ArrayList<>();
+        for (Session value : resultList) {
+            if (value.getExpiresAt().isBefore(now)) {
+                result.add(value);
+            } else
+                break;
+        }
+
+        return result;
     }
 }

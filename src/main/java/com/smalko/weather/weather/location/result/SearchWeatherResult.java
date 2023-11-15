@@ -1,4 +1,4 @@
-package com.smalko.weather.weather.location.result.api;
+package com.smalko.weather.weather.location.result;
 
 import com.smalko.weather.weather.location.HttpStatus;
 import com.smalko.weather.weather.location.json.SearchWeatherForCoordinates;
@@ -16,8 +16,6 @@ public class SearchWeatherResult {
     public static SearchWeatherResult searchWeatherResult(HttpStatus status){
         return new SearchWeatherResult(null, status);
     };
-
-
 
     private SearchWeatherResult(SearchWeatherForCoordinates weather, HttpStatus status) {
         this.weather = weather;

@@ -8,13 +8,15 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-                <a class="navbar-brand" href="#">Weather</a>
-                <form class="d-flex" role="search" method="post">
-                    <input class="form-control me-xl-3" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                <a class="navbar-brand" href="/home">Weather</a>
+                <div th:if="${not model.home}">
+                    <form class="d-flex" role="search" method="post">
+                        <input class="form-control me-xl-3" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
                 <ul class="navbar-nav ml-auto mb-2 mb-lg-1 right" style="margin-left: auto">
-                    <li class="nav-item" th:if="${model.loggedIn}" >
+                    <li class="nav-item" th:if="${model.loggedIn}">
                         <a class="nav-link active" href="/logout">Logout</a>
                     </li>
                     <li class="nav-item" th:unless="${model.loggedIn}">

@@ -1,5 +1,6 @@
 package com.smalko.weather.weather.controller.servlet;
 
+import com.smalko.weather.weather.util.UrlPath;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -13,7 +14,7 @@ public class LogoutServlet extends BaseServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getSession().invalidate();
         cookie(response);
-        response.sendRedirect("/login");
+        response.sendRedirect(UrlPath.LOGIN);
     }
 
     private static void cookie(HttpServletResponse response) {

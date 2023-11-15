@@ -26,6 +26,11 @@ public abstract class RepositoryUtil<K extends Serializable, E> implements Repos
     }
 
     @Override
+    public void deleteEntity(E entity) {
+        entityManager.remove(entity);
+    }
+
+    @Override
     public void update(E entity) {
         entityManager.merge(entity);
     }

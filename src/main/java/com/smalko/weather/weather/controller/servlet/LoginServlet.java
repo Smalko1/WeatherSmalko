@@ -36,16 +36,19 @@ public class LoginServlet extends BaseServlet {
             session.setAttribute("userId", loginResult.getUser().getId());
             createCookie(response, loginResult);
             putAttributeInModel("errors", loginResult.getErrors());
+            response.sendRedirect(UrlPath.HOME);
         }else {
             putAttributeInModel("errors", loginResult.getErrors());
-            doGet(request, response);
+            super.processTemplate("login", request, response);
         }
     }
 
     private static void createCookie(HttpServletResponse response, LoginResult loginResult) {
         var sessionResult = SessionService.getInstance().saveSession(loginResult.getUser());
-        var sessionCookie = new Cookie("sessionId", sessionResult.getReadSessionDto().getId().toString());
-        sessionCookie.setMaxAge((int) ONE_DAY.toSeconds());
-        response.addCookie(sessionCookie);
+        if (sessionResult.isSuccessful()){
+            var sessionCookie = new Cookie("sessionId", sessionResult.getReadSessionDto().getId().toString());
+            sessionCookie.setMaxAge((int) ONE_DAY.toSeconds());
+            response.addCookie(sessionCookie);
+        }
     }
 }

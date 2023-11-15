@@ -1,5 +1,8 @@
 package com.smalko.weather.weather.controller.servlet;
 
+import com.smalko.weather.weather.location.HttpStatus;
+import com.smalko.weather.weather.location.service.OpenWeatherAPI;
+import com.smalko.weather.weather.util.UrlPath;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -16,7 +19,7 @@ import java.util.Map;
 
 @WebServlet
 public class BaseServlet extends HttpServlet {
-    private static final Map<String, Object> MODEL = new HashMap<>();
+    private  Map<String, Object> model;
     private TemplateEngine templateEngine;
     @Override
     public void init() {
@@ -36,8 +39,9 @@ public class BaseServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        model = new HashMap<>();
         setAttributeForHeader(request);
-        request.setAttribute("model", MODEL);
+        request.setAttribute("model", model);
     }
 
     @Override
@@ -45,11 +49,12 @@ public class BaseServlet extends HttpServlet {
         var search = request.getParameter("search");
 
         if (search != null && !search.isEmpty()) {
-            // Выполняем поиск, так как параметр "searchQuery" есть и не пуст
-            // Ваша логика по поиску...
-            // Отправляэм результат
-            System.out.println("Hello search");
-            System.out.println(search);
+            var searchCityResult = OpenWeatherAPI.requestWeatherByCity(search);
+            if (searchCityResult.getStatus().equals(HttpStatus.HTTP_OK)){
+                var searchCityList = searchCityResult.getSearchCityList();
+                putAttributeInModel("searchCityList", searchCityList);
+                response.sendRedirect(UrlPath.HOME);
+            }
         }
     }
 
@@ -63,12 +68,12 @@ public class BaseServlet extends HttpServlet {
     }
     private void setAttributeForHeader(HttpServletRequest request) {
         if (request.getSession().getAttribute("userId") == null){
-            MODEL.put("loggedIn", false);
+            model.put("loggedIn", false);
         }else
-            MODEL.put("loggedIn", true);
+            model.put("loggedIn", true);
     }
 
     protected void putAttributeInModel(String key, Object value){
-        MODEL.put(key, value);
+        model.put(key, value);
     }
 }

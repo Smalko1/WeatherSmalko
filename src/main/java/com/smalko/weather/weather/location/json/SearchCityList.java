@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SearchCity {
+public class SearchCityList {
     private String name;
     private Double lat;
     private Double lon;

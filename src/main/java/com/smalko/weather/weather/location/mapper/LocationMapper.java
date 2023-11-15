@@ -1,7 +1,7 @@
 package com.smalko.weather.weather.location.mapper;
 
 import com.smalko.weather.weather.location.dto.ReadSearchCityDto;
-import com.smalko.weather.weather.location.json.SearchCity;
+import com.smalko.weather.weather.location.json.SearchCityList;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -9,5 +9,5 @@ import org.mapstruct.factory.Mappers;
 public interface LocationMapper {
     LocationMapper INSTANCE = Mappers.getMapper(LocationMapper.class);
 
-    SearchCity searchCityToReadSearchCityDto(ReadSearchCityDto readSearchCityDto);
+    ReadSearchCityDto searchCityToReadSearchCityDto(SearchCityList searchCityList);
 }
