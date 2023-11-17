@@ -17,10 +17,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.smalko.weather.weather.util.UrlPath.HOME;
+
 @WebServlet
 public class BaseServlet extends HttpServlet {
-    private  Map<String, Object> model;
+    private Map<String, Object> model;
     private TemplateEngine templateEngine;
+
     @Override
     public void init() {
 
@@ -35,6 +38,8 @@ public class BaseServlet extends HttpServlet {
         TemplateEngine templateEngine = new TemplateEngine();
         templateEngine.setTemplateResolver(templateResolver);
         this.templateEngine = templateEngine;
+
+
     }
 
     @Override
@@ -42,6 +47,7 @@ public class BaseServlet extends HttpServlet {
         model = new HashMap<>();
         setAttributeForHeader(request);
         request.setAttribute("model", model);
+
     }
 
     @Override
@@ -50,10 +56,11 @@ public class BaseServlet extends HttpServlet {
 
         if (search != null && !search.isEmpty()) {
             var searchCityResult = OpenWeatherAPI.requestWeatherByCity(search);
-            if (searchCityResult.getStatus().equals(HttpStatus.HTTP_OK)){
-                var searchCityList = searchCityResult.getSearchCityList();
-                putAttributeInModel("searchCityList", searchCityList);
-                response.sendRedirect(UrlPath.HOME);
+            if (searchCityResult.getStatus().equals(HttpStatus.HTTP_OK)) {
+                request.getSession().setAttribute("searchCityResult", searchCityResult);
+                response.sendRedirect(request.getContextPath() + HOME);
+            }else{
+                putAttributeInModel("UnsuccessfulSearch", "Unsuccessful search");
             }
         }
     }
@@ -66,14 +73,15 @@ public class BaseServlet extends HttpServlet {
 
         templateEngine.process(templateName, webContext, response.getWriter());
     }
+
     private void setAttributeForHeader(HttpServletRequest request) {
-        if (request.getSession().getAttribute("userId") == null){
+        if (request.getSession().getAttribute("userId") == null) {
             model.put("loggedIn", false);
-        }else
+        } else
             model.put("loggedIn", true);
     }
 
-    protected void putAttributeInModel(String key, Object value){
+    protected void putAttributeInModel(String key, Object value) {
         model.put(key, value);
     }
 }

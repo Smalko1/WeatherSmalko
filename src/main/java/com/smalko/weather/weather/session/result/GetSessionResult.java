@@ -1,9 +1,11 @@
 package com.smalko.weather.weather.session.result;
 
 import com.smalko.weather.weather.user.dto.ReadUserDto;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
 public class GetSessionResult {
     private final boolean successful;
     private final ReadUserDto readUserDto;

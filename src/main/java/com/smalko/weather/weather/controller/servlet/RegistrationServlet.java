@@ -22,15 +22,21 @@ public class RegistrationServlet extends BaseServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         super.doPost(request, response);
 
-        var createUser = CreateUsersDto.builder()
-                .name(request.getParameter("username"))
-                .password(request.getParameter("password"))
-                .build();
-        var result = UsersService.getInstance().registrationUser(createUser);
-        if (!result.isSuccess()) {
-            putAttributeInModel("errors", result.getErrors());
-            super.processTemplate("registration", request, response);
+        var username = request.getParameter("username");
+        var password = request.getParameter("password");
+        if (username != null && password != null) {
+            var createUser = CreateUsersDto.builder()
+                    .name(username)
+                    .password(password)
+                    .build();
+            var result = UsersService.getInstance().registrationUser(createUser);
+            if (!result.isSuccess()) {
+                putAttributeInModel("errors", result.getErrors());
+                super.processTemplate("registration", request, response);
+            }
+            response.sendRedirect(UrlPath.LOGIN);
+            return;
         }
-        response.sendRedirect(UrlPath.LOGIN);
+        doGet(request, response);
     }
 }

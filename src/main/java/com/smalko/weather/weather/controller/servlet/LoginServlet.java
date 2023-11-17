@@ -15,6 +15,7 @@ import java.time.Duration;
 @WebServlet(name = "LoginServlet", value = UrlPath.LOGIN)
 public class LoginServlet extends BaseServlet {
     private static final Duration ONE_DAY = Duration.ofDays(1);
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         super.doGet(request, response);
@@ -25,27 +26,33 @@ public class LoginServlet extends BaseServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         super.doPost(request, response);
 
-        var userLogin = CreateUsersDto.builder()
-                .name(request.getParameter("username"))
-                .password(request.getParameter("password"))
-                .build();
+        var username = request.getParameter("username");
+        var password = request.getParameter("password");
+        if (username != null && password != null) {
+            var userLogin = CreateUsersDto.builder()
+                    .name(username)
+                    .password(password)
+                    .build();
 
-        var loginResult = UsersService.getInstance().authenticationUser(userLogin);
-        if (loginResult.isSuccess()){
-            var session = request.getSession();
-            session.setAttribute("userId", loginResult.getUser().getId());
-            createCookie(response, loginResult);
-            putAttributeInModel("errors", loginResult.getErrors());
-            response.sendRedirect(UrlPath.HOME);
-        }else {
-            putAttributeInModel("errors", loginResult.getErrors());
-            super.processTemplate("login", request, response);
+            var loginResult = UsersService.getInstance().authenticationUser(userLogin);
+            if (loginResult.isSuccess()) {
+                var session = request.getSession();
+                session.setAttribute("userId", loginResult.getUser().getId());
+                createCookie(response, loginResult);
+                putAttributeInModel("errors", loginResult.getErrors());
+                response.sendRedirect(UrlPath.HOME);
+            } else {
+                putAttributeInModel("errors", loginResult.getErrors());
+                super.processTemplate("login", request, response);
+            }
+            return;
         }
+        doGet(request, response);
     }
 
     private static void createCookie(HttpServletResponse response, LoginResult loginResult) {
         var sessionResult = SessionService.getInstance().saveSession(loginResult.getUser());
-        if (sessionResult.isSuccessful()){
+        if (sessionResult.isSuccessful()) {
             var sessionCookie = new Cookie("sessionId", sessionResult.getReadSessionDto().getId().toString());
             sessionCookie.setMaxAge((int) ONE_DAY.toSeconds());
             response.addCookie(sessionCookie);

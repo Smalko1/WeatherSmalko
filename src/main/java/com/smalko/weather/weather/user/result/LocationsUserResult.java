@@ -1,11 +1,13 @@
 package com.smalko.weather.weather.user.result;
 
 import com.smalko.weather.weather.location.Location;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.Set;
 
 @Getter
+@EqualsAndHashCode
 public class LocationsUserResult {
     private final boolean successful;
     private final Set<Location> locations;
