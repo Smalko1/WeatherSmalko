@@ -38,9 +38,8 @@ public class HomeServlet extends BaseServlet {
 
         var selectedCityId = request.getParameter("selectedCityId");
         if (selectedCityId != null){
-            var searchWeatherForCoordinates = weatherForCity.get(Integer.parseInt(selectedCityId));
+            request.getSession().setAttribute("selectedCityId",Integer.parseInt(selectedCityId));
         }
-
     }
 }
 

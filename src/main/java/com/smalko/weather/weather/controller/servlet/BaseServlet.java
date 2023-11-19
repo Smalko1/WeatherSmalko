@@ -4,6 +4,8 @@ import com.smalko.weather.weather.location.service.LocationService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -19,6 +21,7 @@ import static com.smalko.weather.weather.util.UrlPath.HOME;
 
 @WebServlet
 public class BaseServlet extends HttpServlet {
+    private static final Logger log = LoggerFactory.getLogger(BaseServlet.class);
     private Map<String, Object> model;
     private TemplateEngine templateEngine;
 
@@ -29,7 +32,7 @@ public class BaseServlet extends HttpServlet {
         WebApplicationTemplateResolver templateResolver =
                 new WebApplicationTemplateResolver(JakartaServletWebApplication.buildApplication(servletContext));
         templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setPrefix("/WEB-INF/templates/");
+        templateResolver.setPrefix("/templates/");
         templateResolver.setSuffix(".html");
         //templateResolver.setCacheTTLMs(3600000L);
 
@@ -43,8 +46,12 @@ public class BaseServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         model = new HashMap<>();
-        setAttributeForHeader(request);
-        request.setAttribute("model", model);
+        try {
+            setAttributeForHeader(request);
+            request.setAttribute("model", model);
+        }catch (RuntimeException e){
+            log.error("Error when saving attributes");
+        }
 
     }
 
@@ -53,6 +60,7 @@ public class BaseServlet extends HttpServlet {
         var search = request.getParameter("search");
 
         if (search != null && !search.isEmpty()) {
+            log.info("search weather by city");
             var searchWeatherResult = LocationService.getInstance().searchWeatherByCity(search);
             request.getSession().setAttribute("SearchWeatherResult", searchWeatherResult);
             response.sendRedirect(HOME);

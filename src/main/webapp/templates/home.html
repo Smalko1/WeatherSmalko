@@ -15,25 +15,29 @@
 </header>
 
 
-
 <div class="container d-flex flex-column align-items-center vh-100 mt-xxl-5">
     <div class="input-group">
         <form class="d-flex mx-auto" role="search" method="post" style="width: 50%;">
-            <input class="form-control me-xl-3" type="search" placeholder="Search" aria-label="Search" name="search"  required="">
+            <input class="form-control me-xl-3" type="search" placeholder="Search" aria-label="Search" name="search"
+                   required="">
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
     </div>
 
-    <form  th:if="${model.searchWeatherResult != null}" class="d-flex flex-row mt-4 overflow-auto mt-4">
+    <div class="alert alert-danger  mt-xl-4" role="alert" th:if="${model.searchWeatherException != null}">
+        <span th:text="${model.searchWeatherException}"></span>
+    </div>
+
+    <form th:if="${model.searchWeatherResult != null}" class="d-flex flex-row mt-4 overflow-auto mt-4">
         <div class="card mx-2" style="width: 18rem;" th:each="city : ${model.searchWeatherResult}">
             <div class="card-body">
                 <h5 class="card-title" th:text="${city.getCityName()}"></h5>
                 <p class="card-text">
-                    <th th:text="|Temp ${city.current.getTemp()}|"></th>
-                    <th th:text="|Feel ${city.current.getFeelsLike()}|"></th>
+                    <span th:text="|Temp ${city.current.getTemp()}|"></span>
                 </p>
                 <input type="hidden" id="selectedCityId" name="selectedCityId" value="">
-                <button type="button" class="btn btn-primary" onclick="setSelectedCityId(${cityIndex.index})">See more</button>
+                <button type="button" class="btn btn-primary" onclick="setSelectedCityId(${cityIndex.index})">See more
+                </button>
             </div>
         </div>
     </form>
@@ -47,6 +51,7 @@
         document.getElementById('selectedCityId').value = cityIndex;
         document.querySelector('form').submit();
     }
+
     /*]]>*/
 </script>
 </body>

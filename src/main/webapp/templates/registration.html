@@ -38,11 +38,11 @@
                                 <button class="btn btn-primary" type="submit"><span></span> Sign up</button>
                             </div>
                         </form>
-                        <ul>
-                            <li th:each="error : ${model.errors}">
-                                <span th:text="${error.getMessage()}"></span>
-                            </li>
-                        </ul>
+                            <div th:each="error : ${model.errors}" class="mt-xl-4">
+                                <div class="alert alert-danger  mt-xl-4" role="alert">
+                                    <span th:text="${error.getMessage()}"></span>
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>
