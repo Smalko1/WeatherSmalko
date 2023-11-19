@@ -1,8 +1,6 @@
 package com.smalko.weather.weather.controller.servlet;
 
-import com.smalko.weather.weather.location.HttpStatus;
-import com.smalko.weather.weather.location.service.OpenWeatherAPI;
-import com.smalko.weather.weather.util.UrlPath;
+import com.smalko.weather.weather.location.service.LocationService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -55,13 +53,9 @@ public class BaseServlet extends HttpServlet {
         var search = request.getParameter("search");
 
         if (search != null && !search.isEmpty()) {
-            var searchCityResult = OpenWeatherAPI.requestWeatherByCity(search);
-            if (searchCityResult.getStatus().equals(HttpStatus.HTTP_OK)) {
-                request.getSession().setAttribute("searchCityResult", searchCityResult);
-                response.sendRedirect(request.getContextPath() + HOME);
-            }else{
-                putAttributeInModel("UnsuccessfulSearch", "Unsuccessful search");
-            }
+            var searchWeatherResult = LocationService.getInstance().searchWeatherByCity(search);
+            request.getSession().setAttribute("SearchWeatherResult", searchWeatherResult);
+            response.sendRedirect(HOME);
             return;
         }
     }

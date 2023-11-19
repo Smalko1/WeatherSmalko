@@ -24,16 +24,21 @@
         </form>
     </div>
 
-    <form  th:if="${model.searchCityResult != null}" class="d-flex flex-row mt-4 overflow-auto mt-4">
-        <div class="card mx-2" style="width: 18rem;" th:each="city : ${model.searchCityResult.getSearchCityList()}">
+    <form  th:if="${model.searchWeatherResult != null}" class="d-flex flex-row mt-4 overflow-auto mt-4">
+        <div class="card mx-2" style="width: 18rem;" th:each="city : ${model.searchWeatherResult}">
             <div class="card-body">
-                <h5 class="card-title" th:text="${city.name + ' - ' + city.country}"></h5>
+                <h5 class="card-title" th:text="${city.getCityName()}"></h5>
+                <p class="card-text">
+                    <th th:text="|Temp ${city.current.getTemp()}|"></th>
+                    <th th:text="|Feel ${city.current.getFeelsLike()}|"></th>
+                </p>
                 <input type="hidden" id="selectedCityId" name="selectedCityId" value="">
                 <button type="button" class="btn btn-primary" onclick="setSelectedCityId(${cityIndex.index})">See more</button>
             </div>
         </div>
     </form>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">

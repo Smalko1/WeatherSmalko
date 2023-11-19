@@ -7,12 +7,12 @@ import com.smalko.weather.weather.location.errors.TooManyRequestsExceptionWeathe
 import com.smalko.weather.weather.location.json.SearchCityList;
 import com.smalko.weather.weather.location.json.SearchWeatherForCoordinates;
 import com.smalko.weather.weather.location.result.SearchWeatherResult;
-import com.smalko.weather.weather.location.result.api.SearchCityResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LocationService {
+    private static final LocationService INSTANCE = new LocationService();
 
     public SearchWeatherResult searchWeatherByCity(String city) {
         List<SearchWeatherForCoordinates> weatherForCity = new ArrayList<>();
@@ -22,7 +22,7 @@ public class LocationService {
 
                 for (SearchCityList searchCity : searchCityLists) {
                     var searchWeather = OpenWeatherAPI.requestWeatherByCoordinate(searchCity.getLat(), searchCity.getLon());
-                    searchWeather.setCityName(searchCity.getName());
+                    searchWeather.setCityName(searchCity.getName() + " - " + searchCity.getCountry());
                     weatherForCity.add(searchWeather);
                 }
             }
@@ -34,5 +34,9 @@ public class LocationService {
 
     public void saveLocation(CreateLocationDto location) {
 
+    }
+
+    public static LocationService getInstance() {
+        return INSTANCE;
     }
 }

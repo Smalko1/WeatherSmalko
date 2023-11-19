@@ -1,28 +1,33 @@
 package com.smalko.weather.weather.controller.servlet;
 
+import com.smalko.weather.weather.location.json.SearchWeatherForCoordinates;
 import com.smalko.weather.weather.location.result.SearchWeatherResult;
-import com.smalko.weather.weather.location.result.api.SearchCityResult;
-import com.smalko.weather.weather.location.service.OpenWeatherAPI;
 import com.smalko.weather.weather.util.UrlPath;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "HomeServlet", value = UrlPath.HOME)
 public class HomeServlet extends BaseServlet {
+    private List<SearchWeatherForCoordinates> weatherForCity;
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         super.doGet(request, response);
         putAttributeInModel("home", true);
 
-        var searchWeatherResult = (SearchWeatherResult) request.getSession().getAttribute("searchCityResult");
-        if(searchWeatherResult.isSuccessful()){
-            putAttributeInModel("searchWeatherResult", searchWeatherResult.getWeather());
-        }else
-            putAttributeInModel("searchWeatherException", searchWeatherResult.getException());
-        request.getSession().removeAttribute("SearchWeatherResult");
+        var searchWeatherResult = (SearchWeatherResult) request.getSession().getAttribute("SearchWeatherResult");
+        if (searchWeatherResult != null) {
+            if (searchWeatherResult.isSuccessful()) {
+                weatherForCity = searchWeatherResult.getWeather();
+                putAttributeInModel("searchWeatherResult", weatherForCity);
+            } else
+                putAttributeInModel("searchWeatherException", searchWeatherResult.getException());
+            request.getSession().removeAttribute("SearchWeatherResult");
+        }
+
 
         super.processTemplate("home", request, response);
     }
@@ -32,6 +37,9 @@ public class HomeServlet extends BaseServlet {
         super.doPost(request, response);
 
         var selectedCityId = request.getParameter("selectedCityId");
+        if (selectedCityId != null){
+            var searchWeatherForCoordinates = weatherForCity.get(Integer.parseInt(selectedCityId));
+        }
 
     }
 }
