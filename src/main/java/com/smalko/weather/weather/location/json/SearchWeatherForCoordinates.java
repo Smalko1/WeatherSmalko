@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchWeatherForCoordinates {
+    private String cityName;
     private Double lat;
     private Double lon;
     private String timezone;

@@ -28,12 +28,21 @@
         <div class="card mx-2" style="width: 18rem;" th:each="city : ${model.searchCityResult.getSearchCityList()}">
             <div class="card-body">
                 <h5 class="card-title" th:text="${city.name + ' - ' + city.country}"></h5>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+                <input type="hidden" id="selectedCityId" name="selectedCityId" value="">
+                <button type="button" class="btn btn-primary" onclick="setSelectedCityId(${cityIndex.index})">See more</button>
             </div>
         </div>
     </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function setSelectedCityId(cityIndex) {
+        document.getElementById('selectedCityId').value = cityIndex;
+        document.querySelector('form').submit();
+    }
+    /*]]>*/
+</script>
 </body>
 </html>

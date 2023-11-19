@@ -1,12 +1,12 @@
 package com.smalko.weather.weather.location.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.smalko.weather.weather.location.HttpStatus;
+import com.smalko.weather.weather.location.errors.ResponseExceptionWeather;
+import com.smalko.weather.weather.location.errors.TooManyRequestsExceptionWeather;
 import com.smalko.weather.weather.location.json.SearchCityList;
 import com.smalko.weather.weather.location.json.SearchWeatherForCoordinates;
-import com.smalko.weather.weather.location.result.api.SearchCityResult;
-import com.smalko.weather.weather.location.result.SearchWeatherResult;
 import com.smalko.weather.weather.util.PropertiesUtil;
+import com.smalko.weather.weather.location.errors.NotFoundExceptionWeather;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +19,6 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
 
-import static com.smalko.weather.weather.location.result.api.SearchCityResult.*;
-import static com.smalko.weather.weather.location.result.SearchWeatherResult.*;
 import static java.net.HttpURLConnection.*;
 import static java.time.temporal.ChronoUnit.*;
 
@@ -52,48 +50,40 @@ public class OpenWeatherAPI {
         ));
     }
 
-    public static SearchWeatherResult requestWeatherByCoordinate(Double lat, Double lon) {
+    public static SearchWeatherForCoordinates requestWeatherByCoordinate(Double lat, Double lon) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(createURIRequestApiByCoordinates(lat, lon))
                 .GET()
                 .timeout(Duration.of(5, MINUTES))
                 .build();
         log.info("Http Request code {}", httpRequest.hashCode());
-        SearchWeatherResult searchWeatherResult;
         switch (httpRequest.hashCode()) {
-            case HTTP_BAD_REQUEST -> searchWeatherResult = searchWeatherResult(HttpStatus.HTTP_BAD_REQUEST);
-            case HTTP_UNAUTHORIZED -> searchWeatherResult = searchWeatherResult(HttpStatus.HTTP_UNAUTHORIZED);
-            case HTTP_NOT_FOUND -> searchWeatherResult = searchWeatherResult(HttpStatus.HTTP_NOT_FOUND);
-            case HTTP_MANY_REQUESTS -> searchWeatherResult = searchWeatherResult(HttpStatus.HTTP_MANY_REQUESTS);
+            case HTTP_BAD_REQUEST -> throw new ResponseExceptionWeather();
+            case HTTP_NOT_FOUND -> throw new NotFoundExceptionWeather();
+            case HTTP_MANY_REQUESTS -> throw new TooManyRequestsExceptionWeather();
             default -> {
-                searchWeatherResult = searchWeatherResult(convertingJsonStringToJavaObject(httpRequest, SearchWeatherForCoordinates.class));
+                return convertingJsonStringToJavaObject(httpRequest, SearchWeatherForCoordinates.class);
             }
         }
-        return searchWeatherResult;
-
     }
 
 
-    public static SearchCityResult requestWeatherByCity(String city) {
+    public static List<SearchCityList> requestWeatherByCity(String city) {
         var httpRequest = HttpRequest.newBuilder()
                 .uri(createURIRequestSearchCity(city))
                 .GET()
                 .timeout(Duration.of(5, MINUTES))
                 .build();
         log.info("Http Request code {}", httpRequest.hashCode());
-        SearchCityResult searchCityResult;
 
         switch (httpRequest.hashCode()) {
-            case HTTP_BAD_REQUEST -> searchCityResult = createSearchCityResult(HttpStatus.HTTP_BAD_REQUEST);
-            case HTTP_UNAUTHORIZED -> searchCityResult = createSearchCityResult(HttpStatus.HTTP_UNAUTHORIZED);
-            case HTTP_NOT_FOUND -> searchCityResult = createSearchCityResult(HttpStatus.HTTP_NOT_FOUND);
-            case HTTP_MANY_REQUESTS -> searchCityResult = createSearchCityResult(HttpStatus.HTTP_MANY_REQUESTS);
-            default -> searchCityResult = createSearchCityResult(
-                    List.of(convertingJsonStringToJavaObject(httpRequest, SearchCityList[].class))
-            );
+            case HTTP_BAD_REQUEST -> throw new ResponseExceptionWeather();
+            case HTTP_MANY_REQUESTS -> throw new TooManyRequestsExceptionWeather();
+            default -> {
+                return List.of(convertingJsonStringToJavaObject(httpRequest, SearchCityList[].class));
+            }
 
         }
-        return searchCityResult;
     }
 
     private static <T> T convertingJsonStringToJavaObject(HttpRequest request, Class<T> clazz) {

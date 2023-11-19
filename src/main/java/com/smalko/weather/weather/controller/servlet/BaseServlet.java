@@ -62,6 +62,7 @@ public class BaseServlet extends HttpServlet {
             }else{
                 putAttributeInModel("UnsuccessfulSearch", "Unsuccessful search");
             }
+            return;
         }
     }
 
