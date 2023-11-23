@@ -1,4 +1,13 @@
 package com.smalko.weather.weather.location.dto;
 
-public record CreateLocationDto(String name, Double latitude, Double longitude) {
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class CreateLocationDto {
+
+    private String name;
+    private Double latitude;
+    private Double longitude;
 }

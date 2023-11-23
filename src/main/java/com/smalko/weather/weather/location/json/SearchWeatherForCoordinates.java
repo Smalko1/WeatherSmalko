@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.util.List;
 
+
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchWeatherForCoordinates {
@@ -42,6 +43,28 @@ public class SearchWeatherForCoordinates {
 
         @JsonProperty("snow")
         private Snow snow;
+
+        public String getWindDirection() {
+            if (windDeg > 22.5 && windDeg <= 67.5) {
+                return "North-East";
+            } else if (windDeg > 67.5 && windDeg <= 97.5) {
+                return "East";
+            } else if (windDeg > 97.5 && windDeg <= 112.5) {
+                return "South-East";
+            } else if (windDeg > 112.5 && windDeg <= 157.5) {
+                return "South";
+            } else if (windDeg > 157.5 && windDeg <= 202.5) {
+                return "South-West";
+            } else if (windDeg > 202.5 && windDeg <= 247.5) {
+                return "West";
+            } else if (windDeg > 247.5 && windDeg <= 292.5) {
+                return "North-West";
+            } else if (windDeg > 292.5 && windDeg <= 337.5) {
+                return "North";
+            } else {
+                return "North";
+            }
+        }
     }
 
     @Data
@@ -63,4 +86,9 @@ public class SearchWeatherForCoordinates {
         @JsonProperty("1h")
         private Double oneHour;
     }
+
+
+
+
+
 }

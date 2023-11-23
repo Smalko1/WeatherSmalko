@@ -4,27 +4,29 @@ import com.smalko.weather.weather.location.json.SearchWeatherForCoordinates;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.util.Collections;
-import java.util.List;
 
 @Getter
 @EqualsAndHashCode
 public class SearchWeatherResult {
-    private final List<SearchWeatherForCoordinates> weather;
+    private final SearchWeatherForCoordinates weather;
     private final boolean successful;
     private final Exception exception;
 
-    public static SearchWeatherResult result(List<SearchWeatherForCoordinates> weather){
+    public static SearchWeatherResult result(SearchWeatherForCoordinates weather){
         return new SearchWeatherResult(weather, true,  null);
     }
 
     public static SearchWeatherResult result(Exception error){
-        return new SearchWeatherResult(Collections.emptyList(), false,  error);
+        return new SearchWeatherResult(null, false,  error);
     }
 
-    private SearchWeatherResult(List<SearchWeatherForCoordinates> weather, boolean successful, Exception error) {
+    private SearchWeatherResult(SearchWeatherForCoordinates weather, boolean successful, Exception error) {
         this.weather = weather;
         this.successful = successful;
         this.exception = error;
+    }
+
+    public boolean isSuccessful() {
+        return successful;
     }
 }

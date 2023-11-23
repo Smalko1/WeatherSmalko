@@ -5,6 +5,8 @@ import com.smalko.weather.weather.location.errors.ResponseExceptionWeather;
 import com.smalko.weather.weather.location.errors.TooManyRequestsExceptionWeather;
 import com.smalko.weather.weather.location.json.SearchCityList;
 import com.smalko.weather.weather.location.json.SearchWeatherForCoordinates;
+import com.smalko.weather.weather.location.result.SearchCity;
+import com.smalko.weather.weather.location.result.SearchWeatherResult;
 import com.smalko.weather.weather.util.PropertiesUtil;
 import com.smalko.weather.weather.location.errors.NotFoundExceptionWeather;
 import lombok.SneakyThrows;
@@ -19,6 +21,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
 
+import static com.smalko.weather.weather.location.result.SearchWeatherResult.result;
 import static java.net.HttpURLConnection.*;
 import static java.time.temporal.ChronoUnit.*;
 
@@ -50,7 +53,7 @@ public class OpenWeatherAPI {
         ));
     }
 
-    public static SearchWeatherForCoordinates requestWeatherByCoordinate(Double lat, Double lon) {
+    public static SearchWeatherResult requestWeather(Double lat, Double lon, String cityName) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(createURIRequestApiByCoordinates(lat, lon))
                 .GET()
@@ -58,17 +61,25 @@ public class OpenWeatherAPI {
                 .build();
         log.info("Http Request code {}", httpRequest.hashCode());
         switch (httpRequest.hashCode()) {
-            case HTTP_BAD_REQUEST -> throw new ResponseExceptionWeather();
-            case HTTP_NOT_FOUND -> throw new NotFoundExceptionWeather();
-            case HTTP_MANY_REQUESTS -> throw new TooManyRequestsExceptionWeather();
+            case HTTP_BAD_REQUEST -> {
+                return result(new ResponseExceptionWeather());
+            }
+            case HTTP_NOT_FOUND -> {
+                return result(new NotFoundExceptionWeather());
+            }
+            case HTTP_MANY_REQUESTS -> {
+                return result(new TooManyRequestsExceptionWeather());
+            }
             default -> {
-                return convertingJsonStringToJavaObject(httpRequest, SearchWeatherForCoordinates.class);
+                var searchWeatherForCoordinates = convertingJsonStringToJavaObject(httpRequest, SearchWeatherForCoordinates.class);
+                searchWeatherForCoordinates.setCityName(cityName);
+                return result(searchWeatherForCoordinates);
             }
         }
     }
 
 
-    public static List<SearchCityList> requestWeatherByCity(String city) {
+    public static SearchCity requestWeatherByCity(String city) {
         var httpRequest = HttpRequest.newBuilder()
                 .uri(createURIRequestSearchCity(city))
                 .GET()
@@ -77,12 +88,15 @@ public class OpenWeatherAPI {
         log.info("Http Request code {}", httpRequest.hashCode());
 
         switch (httpRequest.hashCode()) {
-            case HTTP_BAD_REQUEST -> throw new ResponseExceptionWeather();
-            case HTTP_MANY_REQUESTS -> throw new TooManyRequestsExceptionWeather();
-            default -> {
-                return List.of(convertingJsonStringToJavaObject(httpRequest, SearchCityList[].class));
+            case HTTP_BAD_REQUEST -> {
+                return SearchCity.result(new ResponseExceptionWeather());
             }
-
+            case HTTP_MANY_REQUESTS -> {
+                return SearchCity.result(new TooManyRequestsExceptionWeather());
+            }
+            default -> {
+                return SearchCity.result(List.of(convertingJsonStringToJavaObject(httpRequest, SearchCityList[].class)));
+            }
         }
     }
 

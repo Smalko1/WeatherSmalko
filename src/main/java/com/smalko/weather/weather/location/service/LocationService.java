@@ -11,26 +11,11 @@ import com.smalko.weather.weather.location.result.SearchWeatherResult;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class LocationService {
     private static final LocationService INSTANCE = new LocationService();
 
-    public SearchWeatherResult searchWeatherByCity(String city) {
-        List<SearchWeatherForCoordinates> weatherForCity = new ArrayList<>();
-        try {
-            var searchCityLists = OpenWeatherAPI.requestWeatherByCity(city);
-            if (!searchCityLists.isEmpty()) {
 
-                for (SearchCityList searchCity : searchCityLists) {
-                    var searchWeather = OpenWeatherAPI.requestWeatherByCoordinate(searchCity.getLat(), searchCity.getLon());
-                    searchWeather.setCityName(searchCity.getName() + " - " + searchCity.getCountry());
-                    weatherForCity.add(searchWeather);
-                }
-            }
-        }catch (NotFoundExceptionWeather | ResponseExceptionWeather | TooManyRequestsExceptionWeather e){
-            return  SearchWeatherResult.result(e);
-        }
-        return SearchWeatherResult.result(weatherForCity);
-    }
 
     public void saveLocation(CreateLocationDto location) {
 

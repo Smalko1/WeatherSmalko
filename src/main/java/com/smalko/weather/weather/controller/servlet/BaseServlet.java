@@ -1,6 +1,7 @@
 package com.smalko.weather.weather.controller.servlet;
 
-import com.smalko.weather.weather.location.service.LocationService;
+import com.smalko.weather.weather.location.result.SearchCity;
+import com.smalko.weather.weather.location.service.OpenWeatherAPI;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -49,7 +50,7 @@ public class BaseServlet extends HttpServlet {
         try {
             setAttributeForHeader(request);
             request.setAttribute("model", model);
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             log.error("Error when saving attributes");
         }
 
@@ -60,12 +61,11 @@ public class BaseServlet extends HttpServlet {
         var search = request.getParameter("search");
 
         if (search != null && !search.isEmpty()) {
-            log.info("search weather by city");
-            var searchWeatherResult = LocationService.getInstance().searchWeatherByCity(search);
-            request.getSession().setAttribute("SearchWeatherResult", searchWeatherResult);
-            response.sendRedirect(HOME);
-            return;
+            log.info("search weather by {}", search);
+            var searchCity = OpenWeatherAPI.requestWeatherByCity(search);
+            request.getSession().setAttribute("searchCity", searchCity);
         }
+        response.sendRedirect(HOME);
     }
 
     protected void processTemplate(String templateName, HttpServletRequest request, HttpServletResponse response) throws IOException {
