@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class SessionRepository extends RepositoryUtil<Integer, Session> {
 
     private static SessionRepository instance;
-    public SessionRepository(Class<Session> clazz, EntityManager entityManager) {
+    private SessionRepository(Class<Session> clazz, EntityManager entityManager) {
         super(clazz, entityManager);
     }
 

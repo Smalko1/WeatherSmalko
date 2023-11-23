@@ -8,6 +8,7 @@ import lombok.Data;
 public class CreateLocationDto {
 
     private String name;
+    private Integer userId;
     private Double latitude;
     private Double longitude;
 }

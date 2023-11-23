@@ -1,6 +1,8 @@
 package com.smalko.weather.weather.controller.servlet;
 
+import com.smalko.weather.weather.location.dto.CreateLocationDto;
 import com.smalko.weather.weather.location.result.SearchCity;
+import com.smalko.weather.weather.location.service.LocationService;
 import com.smalko.weather.weather.location.service.OpenWeatherAPI;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -52,6 +54,12 @@ public class HomeServlet extends BaseServlet {
             }else if (favorites != null) {
                 log.info("User wants to add location in favorites list");
                 // TODO: 23.11.2023 Поздать логику сохранения локациии в БД
+                var createLocationDto = CreateLocationDto.builder()
+                        .name(cityName)
+                        .latitude(Double.valueOf(lat))
+                        .longitude(Double.valueOf(lon))
+                        .build();
+                LocationService.getInstance().saveLocation(createLocationDto);
 
                 putAttributeInModel("seeMore", Boolean.parseBoolean(favorites));
             //Location.save()

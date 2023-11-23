@@ -8,7 +8,7 @@ import java.util.List;
 
 public class UsersRepository extends RepositoryUtil<Integer, UsersEntity> {
     private static UsersRepository instance;
-    public UsersRepository(Class<UsersEntity> clazz, EntityManager entityManager) {
+    private UsersRepository(Class<UsersEntity> clazz, EntityManager entityManager) {
         super(clazz, entityManager);
     }
 
