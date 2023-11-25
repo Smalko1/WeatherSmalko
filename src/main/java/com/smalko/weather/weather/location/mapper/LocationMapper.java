@@ -13,7 +13,7 @@ public interface LocationMapper {
     LocationMapper INSTANCE = Mappers.getMapper(LocationMapper.class);
 
     ReadSearchCityDto searchCityToReadSearchCityDto(SearchCityList searchCityList);
-    @Mapping(target = "users", source = "userId")
+    @Mapping(target = "users", ignore = true)
     @Mapping(target = "id", ignore = true)
     Location createLocationDtoToLocationEntity(CreateLocationDto createLocationDto);
 }

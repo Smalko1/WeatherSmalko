@@ -4,6 +4,8 @@ import com.smalko.weather.weather.location.Location;
 import com.smalko.weather.weather.location.LocationRepository;
 import com.smalko.weather.weather.location.dto.CreateLocationDto;
 import com.smalko.weather.weather.location.mapper.LocationMapper;
+import com.smalko.weather.weather.location.result.FavoriteLocationsUserResult;
+import com.smalko.weather.weather.user.UsersRepository;
 import com.smalko.weather.weather.util.HibernateUtil;
 import jakarta.persistence.EntityManager;
 import org.hibernate.HibernateException;
@@ -12,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Proxy;
+import java.util.NoSuchElementException;
 
 
 public class LocationService {
@@ -19,7 +22,7 @@ public class LocationService {
     private static final Logger log = LoggerFactory.getLogger(LocationService.class);
 
 
-    public void saveLocation(CreateLocationDto locationDto) {
+    public boolean saveLocationInUser(CreateLocationDto locationDto) {
         var locationEntity = LocationMapper.INSTANCE.createLocationDtoToLocationEntity(locationDto);
 
         var entityManager = (EntityManager) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{EntityManager.class},
@@ -28,12 +31,39 @@ public class LocationService {
         entityManager.getTransaction().begin();
 
         try {
-            LocationRepository.getInstance(entityManager).save(locationEntity);
+            var Users = UsersRepository.getInstance(entityManager)
+                    .findById(locationDto.getUserId())
+                    .orElseThrow(() -> new NoSuchElementException("The user is not found by the specified identifier: " + locationEntity.getId()));
+
+            Users.addLocation(locationEntity);
+
             log.info("Save location is successful");
             entityManager.getTransaction().commit();
-        } catch (HibernateException e) {
+            return true;
+        } catch (HibernateException | NoSuchElementException e) {
+            log.error(e.getMessage());
             entityManager.getTransaction().rollback();
         }
+        return false;
+    }
+
+    public FavoriteLocationsUserResult findAllFavoriteUserLocations(Integer userId) {
+        FavoriteLocationsUserResult favoriteLocations = new FavoriteLocationsUserResult();
+        var entityManager = (EntityManager) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{EntityManager.class},
+                (proxy, method, args1) -> method.invoke(HibernateUtil.getSessionFactory().getCurrentSession(), args1));
+        log.info("Create entityManager");
+        entityManager.getTransaction().begin();
+        try {
+            var locationsByUserId = LocationRepository.getInstance(entityManager).getLocationsByUserId(userId);
+            entityManager.getTransaction().commit();
+            for (Location location : locationsByUserId) {
+                favoriteLocations.addWeatherResult(OpenWeatherAPI.requestWeather(location.getLatitude(), location.getLongitude(), location.getName()));
+            }
+        }catch (NullPointerException| HibernateException e){
+            entityManager.getTransaction().rollback();
+            favoriteLocations.setSuccessful(false);
+        }
+        return favoriteLocations;
     }
 
     public static LocationService getInstance() {
