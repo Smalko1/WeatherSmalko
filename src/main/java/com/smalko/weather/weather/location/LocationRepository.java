@@ -32,4 +32,16 @@ public class LocationRepository extends RepositoryUtil<Integer, Location> {
 
         return getEntityManager().createQuery(criteria).getResultList();
     }
+
+    public boolean deleteLocation(Integer userId, Integer locationId) {
+        var criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        var criteriaDelete = criteriaBuilder.createCriteriaDelete(Location.class);
+        var from = criteriaDelete.from(Location.class);
+
+        criteriaDelete.where(
+                criteriaBuilder.equal(from.join("users").get("id"), userId),
+                criteriaBuilder.equal(from.get("id"), locationId)
+        );
+        return getEntityManager().createQuery(criteriaDelete).executeUpdate() > 0;
+    }
 }

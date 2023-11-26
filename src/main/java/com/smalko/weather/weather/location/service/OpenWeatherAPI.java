@@ -73,7 +73,7 @@ public class OpenWeatherAPI {
             default -> {
                 var searchWeatherForCoordinates = convertingJsonStringToJavaObject(httpRequest, SearchWeatherForCoordinates.class);
                 searchWeatherForCoordinates.setCityName(cityName);
-                return result(searchWeatherForCoordinates);
+                return result(null, searchWeatherForCoordinates);
             }
         }
     }

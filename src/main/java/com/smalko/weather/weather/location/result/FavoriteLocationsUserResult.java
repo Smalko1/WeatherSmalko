@@ -13,8 +13,9 @@ public class FavoriteLocationsUserResult {
     private final List<SearchWeatherResult> searchWeatherResultsUnSuccessful;
     private boolean successful = true;
 
-    public void addWeatherResult(SearchWeatherResult weatherResult){
+    public void addWeatherResult(Integer locationId, SearchWeatherResult weatherResult){
         if (weatherResult.isSuccessful()){
+            weatherResult.setLocationId(locationId);
             searchWeatherResultsSuccessful.add(weatherResult);
         }else {
             searchWeatherResultsUnSuccessful.add(weatherResult);

@@ -23,6 +23,7 @@ public class HomeServlet extends BaseServlet {
     public static final String ATTRIBUTE_LON = "lon";
     public static final String ATTRIBUTE_SEE_MORE = "seeMore";
     public static final String ATTRIBUTE_FAVORITE = "favorite";
+    public static final String ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL = "removeLocationSuccessful";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -56,7 +57,13 @@ public class HomeServlet extends BaseServlet {
                 // TODO: 25.11.2023 Написать код в home.html который будет отброжать и проверять на наличие FavoritesLocations
             }
         }
-        removeSessionAttribute(request, ATTRIBUTE_CITY_NAME, ATTRIBUTE_LON, ATTRIBUTE_LAT, ATTRIBUTE_FAVORITE, ATTRIBUTE_SEE_MORE, ATTRIBUTE_SEARCH_CITY);
+        var removeLocationSuccessful = (Boolean) request.getSession().getAttribute(ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL);
+        if (!removeLocationSuccessful){
+            putAttributeInModel("removeLocationSuccessful", false);
+            // TODO: 26.11.2023 Если удаление fulls то нужно показать что не удалось удалить сущность
+
+        }
+        removeSessionAttribute(request, ATTRIBUTE_CITY_NAME, ATTRIBUTE_LON, ATTRIBUTE_LAT, ATTRIBUTE_FAVORITE, ATTRIBUTE_SEE_MORE, ATTRIBUTE_SEARCH_CITY, ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL);
         super.processTemplate("home", request, response);
     }
 
@@ -68,6 +75,7 @@ public class HomeServlet extends BaseServlet {
         var lon = request.getParameter("lon");
         var seeMore = request.getParameter("seeMore");
         var favorite = request.getParameter("favorites");
+        var removeLocation = request.getParameter("remove");
 
         if (cityName != null && lat != null && lon != null) {
             if (seeMore != null) {
@@ -80,6 +88,14 @@ public class HomeServlet extends BaseServlet {
             request.getSession().setAttribute(ATTRIBUTE_CITY_NAME, cityName);
             request.getSession().setAttribute(ATTRIBUTE_LAT, lat);
             request.getSession().setAttribute(ATTRIBUTE_LON, lon);
+        }
+
+        if (removeLocation != null){
+            var userId = getUserId(request);
+            var removeLocationSuccessful = LocationService.getInstance().removeLocationInUser(userId, Integer.valueOf(removeLocation));
+            if (!removeLocationSuccessful){
+                request.getSession().setAttribute(ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL, false);
+            }
         }
         super.doPost(request, response);
 
