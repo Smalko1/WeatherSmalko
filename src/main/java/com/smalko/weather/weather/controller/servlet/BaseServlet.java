@@ -23,6 +23,8 @@ import static com.smalko.weather.weather.util.UrlPath.HOME;
 @WebServlet
 public class BaseServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(BaseServlet.class);
+    public static final String ATTRIBUTE_SEARCH_CITY = "searchCity";
+    private static final String ATTRIBUTE_USER_ID = "userId";
     private Map<String, Object> model;
     private TemplateEngine templateEngine;
 
@@ -63,7 +65,7 @@ public class BaseServlet extends HttpServlet {
         if (search != null && !search.isEmpty()) {
             log.info("search weather by {}", search);
             var searchCity = OpenWeatherAPI.requestWeatherByCity(search);
-            request.getSession().setAttribute("searchCity", searchCity);
+            request.getSession().setAttribute(ATTRIBUTE_SEARCH_CITY, searchCity);
         }
         response.sendRedirect(HOME);
     }
@@ -78,7 +80,7 @@ public class BaseServlet extends HttpServlet {
     }
 
     private void setAttributeForHeader(HttpServletRequest request) {
-        if (request.getSession().getAttribute("userId") == null) {
+        if (request.getSession().getAttribute(ATTRIBUTE_USER_ID) == null) {
             model.put("loggedIn", false);
         } else
             model.put("loggedIn", true);

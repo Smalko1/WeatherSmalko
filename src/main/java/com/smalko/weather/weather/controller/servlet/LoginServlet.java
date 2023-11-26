@@ -17,16 +17,18 @@ import java.util.List;
 @WebServlet(name = "LoginServlet", value = UrlPath.LOGIN)
 public class LoginServlet extends BaseServlet {
     private static final Duration ONE_DAY = Duration.ofDays(1);
-    private List<Error> errors;
+    private static final String ATTRIBUTE_ERROR = "errors";
+    private static final String ATTRIBUTE_USER_ID = "userId";
 
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         super.doGet(request, response);
 
+        var errors = (String) request.getSession().getAttribute(ATTRIBUTE_ERROR);
         if (errors != null){
             putAttributeInModel("errors", errors);
-            request.getSession().removeAttribute("errors");
+            request.getSession().removeAttribute(ATTRIBUTE_ERROR);
         }
 
         super.processTemplate("login", request, response);
@@ -47,11 +49,11 @@ public class LoginServlet extends BaseServlet {
             var loginResult = UsersService.getInstance().authenticationUser(userLogin);
             if (loginResult.isSuccess()) {
                 var session = request.getSession();
-                session.setAttribute("userId", loginResult.getUser().getId());
+                session.setAttribute(ATTRIBUTE_USER_ID, loginResult.getUser().getId());
                 createCookie(response, loginResult);
                 response.sendRedirect(UrlPath.HOME);
             } else {
-                errors = loginResult.getErrors();
+                request.getSession().setAttribute(ATTRIBUTE_ERROR, loginResult.getErrors());
             }
         }
         doGet(request, response);

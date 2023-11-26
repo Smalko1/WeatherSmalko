@@ -13,14 +13,16 @@ import java.util.List;
 
 @WebServlet(name = "RegistrationServlet", value = UrlPath.REGISTRATION)
 public class RegistrationServlet extends BaseServlet {
-    private List<Error> errors;
+    private static final String ATTRIBUTE_ERRORS = "errors";
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         super.doGet(request, response);
 
-        if (errors != null){
+        var errors = request.getSession().getAttribute(ATTRIBUTE_ERRORS);
+        if (errors != null) {
             putAttributeInModel("errors", errors);
-            request.getSession().removeAttribute("errors");
+            request.getSession().removeAttribute(ATTRIBUTE_ERRORS);
         }
         super.processTemplate("registration", request, response);
 
@@ -39,8 +41,8 @@ public class RegistrationServlet extends BaseServlet {
                     .build();
             var result = UsersService.getInstance().registrationUser(createUser);
             if (!result.isSuccess()) {
-                errors = result.getErrors();
-            }else
+                request.getSession().setAttribute(ATTRIBUTE_ERRORS, result.getErrors());
+            } else
                 response.sendRedirect(UrlPath.LOGIN);
         }
         doGet(request, response);
