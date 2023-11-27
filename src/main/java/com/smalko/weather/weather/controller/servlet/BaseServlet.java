@@ -1,6 +1,7 @@
 package com.smalko.weather.weather.controller.servlet;
 
 import com.smalko.weather.weather.location.service.OpenWeatherAPI;
+import com.smalko.weather.weather.util.Attributes;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -17,13 +18,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.smalko.weather.weather.util.Attributes.*;
 import static com.smalko.weather.weather.util.UrlPath.HOME;
 
 @WebServlet
 public class BaseServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(BaseServlet.class);
-    public static final String ATTRIBUTE_SEARCH_CITY = "searchCity";
-    private static final String ATTRIBUTE_USER_ID = "userId";
     private Map<String, Object> model;
     private TemplateEngine templateEngine;
 
@@ -61,12 +61,15 @@ public class BaseServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var search = request.getParameter("search");
 
-        if (search != null && !search.isEmpty()) {
-            log.info("search weather by {}", search);
-            var searchCity = OpenWeatherAPI.requestWeatherByCity(search);
-            request.getSession().setAttribute(ATTRIBUTE_SEARCH_CITY, searchCity);
-            response.sendRedirect(request.getContextPath() + HOME);
-            return;
+        if (search != null) {
+            search = search.trim();
+            if (!search.isEmpty()) {
+                log.info("search weather by {}", search);
+                var searchCity = OpenWeatherAPI.requestWeatherByCity(search);
+                request.getSession().setAttribute(ATTRIBUTE_SEARCH_CITY, searchCity);
+                response.sendRedirect(request.getContextPath() + HOME);
+                return;
+            }
         }
     }
 
@@ -90,10 +93,10 @@ public class BaseServlet extends HttpServlet {
         model.put(key, value);
     }
 
-    protected void removeSessionAttribute(HttpServletRequest request, String ... attributes){
+    protected void removeSessionAttribute(HttpServletRequest request, String... attributes) {
         var session = request.getSession();
         for (String attribute : attributes) {
-            if (attribute != null){
+            if (attribute != null) {
                 session.removeAttribute(attribute);
             }
         }

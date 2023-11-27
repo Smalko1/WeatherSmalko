@@ -1,6 +1,11 @@
 <!-- header-fragment.html -->
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="favoritesWeather">
+  <div th:if="${model.removeLocationSuccessful != null}" class="mt-xl-4">
+    <div class="alert alert-danger  mt-xl-4" role="alert">
+      <h5>Sorry your location couldn't be deleted from favorites.</h5>
+    </div>
+  </div>
   <div th:if="${model.favoritesLocations != null}" class="d-flex flex-row flex-wrap mt-4 overflow-auto mt-4">
     <form th:if="${model.favoritesLocations.isSuccessful}" action="/home" method="post" class="d-flex flex-row flex-wrap">
       <div class="card mx-2 mb-2" style="width: 18rem;" th:each="weatherResultSuccessful : ${model.favoritesLocations.searchWeatherResultsSuccessful}">

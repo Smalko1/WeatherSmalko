@@ -7,7 +7,7 @@ import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
 
-@WebServlet(name = "logout", value = "/logout")
+@WebServlet(name = "logout", value = UrlPath.LOGOUT)
 public class LogoutServlet extends BaseServlet {
 
     @Override
@@ -16,6 +16,8 @@ public class LogoutServlet extends BaseServlet {
         cookie(response);
         response.sendRedirect(UrlPath.LOGIN);
     }
+
+    // TODO: 27.11.2023 Не перенаправляет на логин сттаницу 
 
     private static void cookie(HttpServletResponse response) {
         var sessionCookie = new Cookie("sessionId", null);

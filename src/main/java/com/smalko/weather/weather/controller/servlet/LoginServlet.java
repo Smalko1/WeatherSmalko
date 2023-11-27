@@ -5,6 +5,7 @@ import com.smalko.weather.weather.user.UsersService;
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
 import com.smalko.weather.weather.user.result.LoginResult;
 import com.smalko.weather.weather.user.validator.Error;
+import com.smalko.weather.weather.util.Attributes;
 import com.smalko.weather.weather.util.UrlPath;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -14,12 +15,11 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
+import static com.smalko.weather.weather.util.Attributes.*;
+
 @WebServlet(name = "LoginServlet", value = UrlPath.LOGIN)
 public class LoginServlet extends BaseServlet {
     private static final Duration ONE_DAY = Duration.ofDays(1);
-    private static final String ATTRIBUTE_ERROR = "errors";
-    private static final String ATTRIBUTE_USER_ID = "userId";
-
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,6 +30,12 @@ public class LoginServlet extends BaseServlet {
             putAttributeInModel("errors", errors);
             request.getSession().removeAttribute(ATTRIBUTE_ERROR);
         }
+
+        var errorAndLocation = (String) request.getSession().getAttribute(ATTRIBUTE_ERROR_ADD_LOCATION);
+        if (errorAndLocation != null){
+            putAttributeInModel("errorAndLocation", errorAndLocation);
+        }
+        // TODO: 27.11.2023 Дописать в html
         super.processTemplate("login", request, response);
     }
 
@@ -40,6 +46,8 @@ public class LoginServlet extends BaseServlet {
         var username = request.getParameter("username");
         var password = request.getParameter("password");
         if (username != null && password != null) {
+            username = username.trim();
+            password = password.trim();
             var userLogin = CreateUsersDto.builder()
                     .name(username)
                     .password(password)

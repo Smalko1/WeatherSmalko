@@ -12,12 +12,11 @@ public class SessionCleanupService {
     private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     public static void startSessionCleanupTask() {
-        // Запустить задачу каждый час для очистки устаревших сессий
+        // Run a task every hour to clear outdated sessions
         scheduler.scheduleAtFixedRate(SessionCleanupService::cleanupExpiredSessions, 0, 1, TimeUnit.MINUTES);
     }
 
     static void cleanupExpiredSessions() {
-        // Ваш код для удаления устаревших сессий из базы данных
         SessionService.getInstance().takingAndRemoveSessions();
     }
 }

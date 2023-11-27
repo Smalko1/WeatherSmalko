@@ -12,18 +12,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import static com.smalko.weather.weather.util.Attributes.*;
 import static com.smalko.weather.weather.util.UrlPath.HOME;
+import static com.smalko.weather.weather.util.UrlPath.LOGIN;
 
 @WebServlet(name = "HomeServlet", value = HOME)
 public class HomeServlet extends BaseServlet {
     private static final Logger log = LoggerFactory.getLogger(HomeServlet.class);
-    public static final String ATTRIBUTE_SEARCH_CITY = "searchCity";
-    public static final String ATTRIBUTE_CITY_NAME = "cityName";
-    public static final String ATTRIBUTE_LAT = "lat";
-    public static final String ATTRIBUTE_LON = "lon";
-    public static final String ATTRIBUTE_SEE_MORE = "seeMore";
-    public static final String ATTRIBUTE_FAVORITE = "favorite";
-    public static final String ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL = "removeLocationSuccessful";
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -53,12 +49,10 @@ public class HomeServlet extends BaseServlet {
                 putAttributeInModel("favoritesLocations", favoritesLocations);
             } else
                 putAttributeInModel("favoritesLocations", "Oops, there was an error, we can't show you your favorite locations.");
-            // TODO: 25.11.2023 Написать код в home.html который будет отброжать и проверять на наличие FavoritesLocations
         }
         var removeLocationSuccessful = (Boolean) request.getSession().getAttribute(ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL);
         if (removeLocationSuccessful != null) {
             putAttributeInModel("removeLocationSuccessful", false);
-            // TODO: 26.11.2023 Если удаление fulls то нужно показать что не удалось удалить сущность
 
         }
         removeSessionAttribute(request, ATTRIBUTE_CITY_NAME, ATTRIBUTE_LON, ATTRIBUTE_LAT, ATTRIBUTE_FAVORITE, ATTRIBUTE_SEE_MORE, ATTRIBUTE_SEARCH_CITY, ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL);
@@ -88,7 +82,7 @@ public class HomeServlet extends BaseServlet {
 
             if (favorite != null) {
                 log("Add location in favorite list");
-                addLocationInFavorite(request, cityName, lat, lon);
+                addLocationInFavorite(request, response, cityName, lat, lon);
                 response.sendRedirect(request.getContextPath() + HOME);
                 return;
             }
@@ -115,10 +109,17 @@ public class HomeServlet extends BaseServlet {
         putAttributeInModel("seeWeather", searchWeather);
     }
 
-    private void addLocationInFavorite(HttpServletRequest request, String cityName, String lat, String lon) {
+    private void addLocationInFavorite(HttpServletRequest request,HttpServletResponse response , String cityName, String lat, String lon) throws IOException {
         log.info("User wants to add location in favorites list");
+        var userId = getUserId(request);
+        if (userId == null){
+            String message = "In order to add a location to your favorites, you need to register or log in";
+            request.setAttribute(ATTRIBUTE_ERROR_ADD_LOCATION, message);
+            response.sendRedirect(request.getContextPath() + LOGIN);
+            return;
+        }
         var createLocationDto = CreateLocationDto.builder()
-                .userId(getUserId(request))
+                .userId(userId)
                 .name(cityName)
                 .latitude(Double.valueOf(lat))
                 .longitude(Double.valueOf(lon))
