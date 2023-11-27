@@ -1,6 +1,5 @@
 package com.smalko.weather.weather.controller.servlet;
 
-import com.smalko.weather.weather.location.result.SearchCity;
 import com.smalko.weather.weather.location.service.OpenWeatherAPI;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -66,8 +65,9 @@ public class BaseServlet extends HttpServlet {
             log.info("search weather by {}", search);
             var searchCity = OpenWeatherAPI.requestWeatherByCity(search);
             request.getSession().setAttribute(ATTRIBUTE_SEARCH_CITY, searchCity);
+            response.sendRedirect(request.getContextPath() + HOME);
+            return;
         }
-        response.sendRedirect(HOME);
     }
 
     protected void processTemplate(String templateName, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -88,5 +88,14 @@ public class BaseServlet extends HttpServlet {
 
     protected void putAttributeInModel(String key, Object value) {
         model.put(key, value);
+    }
+
+    protected void removeSessionAttribute(HttpServletRequest request, String ... attributes){
+        var session = request.getSession();
+        for (String attribute : attributes) {
+            if (attribute != null){
+                session.removeAttribute(attribute);
+            }
+        }
     }
 }

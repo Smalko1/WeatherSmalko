@@ -31,7 +31,6 @@ public class HibernateUtil {
 
         if (sessionFactory == null) {
             sessionFactory = createSessionFactory();
-            SessionCleanupService.startSessionCleanupTask();
         }
         return sessionFactory;
 

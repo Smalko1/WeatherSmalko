@@ -5,6 +5,7 @@ import com.smalko.weather.weather.location.LocationRepository;
 import com.smalko.weather.weather.location.dto.CreateLocationDto;
 import com.smalko.weather.weather.location.mapper.LocationMapper;
 import com.smalko.weather.weather.location.result.FavoriteLocationsUserResult;
+import com.smalko.weather.weather.location.result.SearchWeatherResult;
 import com.smalko.weather.weather.user.UsersEntity;
 import com.smalko.weather.weather.user.UsersRepository;
 import com.smalko.weather.weather.util.HibernateUtil;
@@ -59,17 +60,20 @@ public class LocationService {
             var locationsByUserId = LocationRepository.getInstance(entityManager).getLocationsByUserId(userId);
             entityManager.getTransaction().commit();
             for (Location location : locationsByUserId) {
-                favoriteLocations.addWeatherResult(
-                        location.getId(), OpenWeatherAPI.requestWeather(location.getLatitude(), location.getLongitude(), location.getName()));
+                log.info("Add location Id {}", location.getId());
+                var searchWeatherResult = OpenWeatherAPI.requestWeather(location.getLatitude(), location.getLongitude(), location.getName());
+                searchWeatherResult.setLocationId(location.getId());
+                favoriteLocations.addWeatherResult(searchWeatherResult);
             }
-        }catch (NullPointerException| HibernateException e){
+        } catch (NullPointerException | HibernateException e) {
+            log.info("Failed to take favorite locations");
             entityManager.getTransaction().rollback();
             favoriteLocations.setSuccessful(false);
         }
         return favoriteLocations;
     }
 
-    public boolean removeLocationInUser(Integer userId, Integer locationId){
+    public boolean removeLocationInUser(Integer userId, Integer locationId) {
         var entityManager = (EntityManager) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{EntityManager.class},
                 (proxy, method, args1) -> method.invoke(HibernateUtil.getSessionFactory().getCurrentSession(), args1));
         log.info("Create entityManager");
@@ -79,7 +83,7 @@ public class LocationService {
 
             entityManager.getTransaction().commit();
             return deleteSuccessful;
-        }catch (EntityNotFoundException | OptimisticLockException e){
+        } catch (EntityNotFoundException | OptimisticLockException e) {
             log.error("Error while removing location", e);
             entityManager.getTransaction().rollback();
             return false;

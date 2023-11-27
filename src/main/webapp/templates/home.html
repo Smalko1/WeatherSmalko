@@ -32,49 +32,19 @@
           method="post">
         <div class="card mx-2" style="width: 18rem;" th:each="city : ${model.searchCityList}">
             <div class="card-body">
-                <h5 class="card-title" th:text="|${city.getName()} ${city.getCountry()}|"></h5>
+                <h5 class="card-title" th:text="|${city.getName} ${city.getCountry}|"></h5>
                 <p class="card-text"></p>
-                <input type="hidden" name="name" th:value="|${city.getName()} ${city.getCountry()}|">
-                <input type="hidden" name="lat" th:value="${city.getLat()}">
-                <input type="hidden" name="lon" th:value="${city.getLon()}">
+                <input type="hidden" name="name" th:value="|${city.getName} ${city.getCountry}|">
+                <input type="hidden" name="lat" th:value="${city.getLat}">
+                <input type="hidden" name="lon" th:value="${city.getLon}">
                 <input type="hidden" name="seeMore" th:value="${true}">
                 <button type="submit" class="btn btn-primary" role="button">See more</button>
             </div>
         </div>
     </form>
 
-    <div th:if="${model.weather != null}" class="d-flex flex-row mt-4 overflow-auto mt-4">
-        <form th:if="${model.weather.isSuccessful()}">
-            <div class="card mx-2" style="width: 18rem;" th:with="weather=${model.weather.weather}">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${weather.getCityName()}"></h5>
-                    <div th:with="currentWeather=${weather.current}">
-                        <p th:text="|Temp: ${currentWeather.getTemp()}&deg;C|"></p>
-                        <p th:text="|Feels like: ${currentWeather.getFeelsLike()}&deg;C|"></p>
-                        <p th:text="|Pressure: ${currentWeather.getPressure()} pascal|"></p>
-                        <p th:text="|Humidity: ${currentWeather.getHumidity()} %|"></p>
-                        <p th:text="|Pressure: ${currentWeather.getHumidity()} %|"></p>
-                        <p th:text="|Dew point: ${currentWeather.getDewPoint()} &deg;C|"></p>
-                        <p th:text="|Current UV index: ${currentWeather.getUvi()}|"></p>
-                        <p th:text="|Average visibility: ${currentWeather.getVisibility()} metres|"></p>
-                        <p th:text="|Wind speed: ${currentWeather.getWindSpeed()} metre/sec|"></p>
-                        <p th:if="${currentWeather.getWindGust() != null}" th:text="|Wind speed: ${currentWeather.getWindGust()} metre/sec|"></p>
-                        <p th:text="|Wind direction: ${currentWeather.getWindDirection()}|"></p>
-                        <p th:if="${currentWeather.rain != null and currentWeather.rain.oneHour != null}" th:text="|Precipitation: ${currentWeather.rain.oneHour} mm/h|"></p>
-                        <p th:if="${currentWeather.snow != null and currentWeather.snow.oneHour != null}" th:text="|Precipitation: ${currentWeather.snow.getOneHour()} mm/h|"></p>
-                    </div>
-                    <input type="hidden" name="name" th:value="|${weather.getCityName()}|">
-                    <input type="hidden" name="lat" th:value="${weather.getLat()}">
-                    <input type="hidden" name="lon" th:value="${weather.getLon()}">
-                    <input type="hidden" name="favorites" th:value="${true}">
-                    <button type="submit" class="btn btn-primary" role="button">Add to favorites</button>
-                </div>
-            </div>
-        </form>
-        <div th:unless="${model.weather.isSuccessful()}">
-            Error
-        </div>
-    </div>
+    <div th:replace="~{fragments/seeMoreWeatherInCity ::seeWeather}"></div>
+    <div th:replace="~{fragments/favoritesWeather ::favoritesWeather}"></div>
 </div>
 
 

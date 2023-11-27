@@ -26,7 +26,6 @@ class LocationServiceTest {
                 .userId(1)
                 .build();
 
-        var b = LocationService.getInstance().saveLocationInUser(locationDto);
-        Assertions.assertThat(b).isTrue();
+        LocationService.getInstance().saveLocationInUser(locationDto);
     }
 }

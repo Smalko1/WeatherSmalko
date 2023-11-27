@@ -39,26 +39,24 @@ public class HomeServlet extends BaseServlet {
         var lat = (String) request.getSession().getAttribute(ATTRIBUTE_LAT);
         var lon = (String) request.getSession().getAttribute(ATTRIBUTE_LON);
         var seeMore = (String) request.getSession().getAttribute(ATTRIBUTE_SEE_MORE);
-        var favorite = (String) request.getSession().getAttribute(ATTRIBUTE_FAVORITE);
-        if (cityName != null && lat != null && lon != null) {
-            if (seeMore != null) {
-                handleSeeMoreRequest(request, cityName, lat, lon, seeMore);
-            } else if (favorite != null) {
-                processLocationAttributes(request, cityName, lat, lon);
-            }
+        if (cityName != null && lat != null && lon != null && seeMore != null) {
+            log("Search location weather");
+            handleSeeMoreRequest(cityName, lat, lon, seeMore);
 
-            var userId = getUserId(request);
-            if (userId != null && seeMore == null && searchCity == null) {
-                var favoritesLocations = LocationService.getInstance().findAllFavoriteUserLocations(userId);
+        }
 
-                if (favoritesLocations.isSuccessful()) {
-                    putAttributeInModel("FavoritesLocations", favoritesLocations);
-                }
-                // TODO: 25.11.2023 Написать код в home.html который будет отброжать и проверять на наличие FavoritesLocations
-            }
+        var userId = getUserId(request);
+        if (userId != null && seeMore == null && searchCity == null) {
+            var favoritesLocations = LocationService.getInstance().findAllFavoriteUserLocations(userId);
+
+            if (favoritesLocations.isSuccessful()) {
+                putAttributeInModel("favoritesLocations", favoritesLocations);
+            } else
+                putAttributeInModel("favoritesLocations", "Oops, there was an error, we can't show you your favorite locations.");
+            // TODO: 25.11.2023 Написать код в home.html который будет отброжать и проверять на наличие FavoritesLocations
         }
         var removeLocationSuccessful = (Boolean) request.getSession().getAttribute(ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL);
-        if (!removeLocationSuccessful){
+        if (removeLocationSuccessful != null) {
             putAttributeInModel("removeLocationSuccessful", false);
             // TODO: 26.11.2023 Если удаление fulls то нужно показать что не удалось удалить сущность
 
@@ -75,27 +73,35 @@ public class HomeServlet extends BaseServlet {
         var lon = request.getParameter("lon");
         var seeMore = request.getParameter("seeMore");
         var favorite = request.getParameter("favorites");
-        var removeLocation = request.getParameter("remove");
+        var removeLocation = request.getParameter("removeLocation");
 
         if (cityName != null && lat != null && lon != null) {
             if (seeMore != null) {
                 request.getSession().setAttribute(ATTRIBUTE_SEE_MORE, seeMore);
+                log.info("User searches for this {}", cityName);
+                request.getSession().setAttribute(ATTRIBUTE_CITY_NAME, cityName);
+                request.getSession().setAttribute(ATTRIBUTE_LAT, lat);
+                request.getSession().setAttribute(ATTRIBUTE_LON, lon);
+                response.sendRedirect(request.getContextPath() + HOME);
+                return;
             }
+
             if (favorite != null) {
-                request.getSession().setAttribute(ATTRIBUTE_FAVORITE, favorite);
+                log("Add location in favorite list");
+                addLocationInFavorite(request, cityName, lat, lon);
+                response.sendRedirect(request.getContextPath() + HOME);
+                return;
             }
-            log.info("User searches for this {}", cityName);
-            request.getSession().setAttribute(ATTRIBUTE_CITY_NAME, cityName);
-            request.getSession().setAttribute(ATTRIBUTE_LAT, lat);
-            request.getSession().setAttribute(ATTRIBUTE_LON, lon);
         }
 
-        if (removeLocation != null){
+        if (removeLocation != null) {
             var userId = getUserId(request);
             var removeLocationSuccessful = LocationService.getInstance().removeLocationInUser(userId, Integer.valueOf(removeLocation));
-            if (!removeLocationSuccessful){
+            if (!removeLocationSuccessful) {
                 request.getSession().setAttribute(ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL, false);
             }
+            response.sendRedirect(request.getContextPath() + HOME);
+            return;
         }
         super.doPost(request, response);
 
@@ -104,22 +110,22 @@ public class HomeServlet extends BaseServlet {
         //Розобраться с проблемой ввода названия городв в которых есть 2 и больше слов которые рразделены -
     }
 
-    private void handleSeeMoreRequest(HttpServletRequest request, String cityName, String lat, String lon, String seeMore) {
+    private void handleSeeMoreRequest(String cityName, String lat, String lon, String seeMore) {
         log.info("User wants to see the weather of a location {}", cityName);
         var searchWeather = OpenWeatherAPI.requestWeather(Double.valueOf(lat), Double.valueOf(lon), cityName);
         putAttributeInModel("seeMore", Boolean.parseBoolean(seeMore));
-        putAttributeInModel("weather", searchWeather);
+        putAttributeInModel("seeWeather", searchWeather);
     }
 
-    private static void processLocationAttributes(HttpServletRequest request, String cityName, String lat, String lon) {
+    private void addLocationInFavorite(HttpServletRequest request, String cityName, String lat, String lon) {
         log.info("User wants to add location in favorites list");
-
         var createLocationDto = CreateLocationDto.builder()
                 .userId(getUserId(request))
                 .name(cityName)
                 .latitude(Double.valueOf(lat))
                 .longitude(Double.valueOf(lon))
                 .build();
+
         LocationService.getInstance().saveLocationInUser(createLocationDto);
     }
 
@@ -135,15 +141,9 @@ public class HomeServlet extends BaseServlet {
     }
 
     private static Integer getUserId(HttpServletRequest request) {
-        return (Integer) request.getSession().getAttribute("userId");
+        var userId = (Integer) request.getSession().getAttribute("userId");
+        log.info("user id = {}", userId);
+        return userId;
     }
 
-    private void removeSessionAttribute(HttpServletRequest request, String ... attributes){
-        var session = request.getSession();
-        for (String attribute : attributes) {
-            if (attribute != null){
-                session.removeAttribute(attribute);
-            }
-        }
-    }
 }

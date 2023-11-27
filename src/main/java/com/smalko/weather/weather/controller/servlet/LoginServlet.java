@@ -30,7 +30,6 @@ public class LoginServlet extends BaseServlet {
             putAttributeInModel("errors", errors);
             request.getSession().removeAttribute(ATTRIBUTE_ERROR);
         }
-
         super.processTemplate("login", request, response);
     }
 
@@ -52,6 +51,7 @@ public class LoginServlet extends BaseServlet {
                 session.setAttribute(ATTRIBUTE_USER_ID, loginResult.getUser().getId());
                 createCookie(response, loginResult);
                 response.sendRedirect(UrlPath.HOME);
+                return;
             } else {
                 request.getSession().setAttribute(ATTRIBUTE_ERROR, loginResult.getErrors());
             }

@@ -42,8 +42,10 @@ public class RegistrationServlet extends BaseServlet {
             var result = UsersService.getInstance().registrationUser(createUser);
             if (!result.isSuccess()) {
                 request.getSession().setAttribute(ATTRIBUTE_ERRORS, result.getErrors());
-            } else
+            } else {
                 response.sendRedirect(UrlPath.LOGIN);
+                return;
+            }
         }
         doGet(request, response);
     }

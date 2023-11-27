@@ -49,7 +49,7 @@ public class SessionService {
         }
     }
 
-    public GetSessionResult getSessionById(int sessionId) {
+    public GetSessionResult getSessionById(Integer sessionId) {
         var entityManager = (EntityManager) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{EntityManager.class},
                 (proxy, method, args1) -> method.invoke(HibernateUtil.getSessionFactory().getCurrentSession(), args1));
         entityManager.getTransaction().begin();

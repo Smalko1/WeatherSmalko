@@ -33,4 +33,5 @@ public class SearchWeatherResult {
     public boolean isSuccessful() {
         return successful;
     }
+
 }
