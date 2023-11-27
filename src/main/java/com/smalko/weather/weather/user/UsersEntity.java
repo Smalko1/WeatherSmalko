@@ -38,4 +38,9 @@ public class UsersEntity {
         locations.add(location);
         location.setUsers(this);
     }
+
+    public void removeLocation(Location location) {
+        locations.remove(location);
+        location.setUsers(null);
+    }
 }

@@ -48,7 +48,7 @@ public class OpenWeatherAPI {
     private static URI createURIRequestSearchCity(String city) {
         log.info("Create URI request");
         return new URI(SEARCH_COORDINATES_FOR_CITY.formatted(
-                city,
+                city.trim().replaceAll(" ", "%20"),
                 PropertiesUtil.get("api_key")
         ));
     }

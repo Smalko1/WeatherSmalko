@@ -79,10 +79,22 @@ public class LocationService {
         log.info("Create entityManager");
         entityManager.getTransaction().begin();
         try {
-            var deleteSuccessful = LocationRepository.getInstance(entityManager).deleteLocation(userId, locationId);
+            var users = UsersRepository.getInstance(entityManager).findById(userId)
+                    .orElseThrow(() -> new NoSuchElementException("The user is not found by the specified identifier: " + userId));
 
+            Location removeLocation = null;
+            for (Location location : users.getLocations()) {
+                if (location.getId().equals(locationId)){
+                    removeLocation = location;
+                    break;
+                }
+            }
+
+            if (removeLocation != null){
+                users.removeLocation(removeLocation);
+            }
             entityManager.getTransaction().commit();
-            return deleteSuccessful;
+            return true;
         } catch (EntityNotFoundException | OptimisticLockException e) {
             log.error("Error while removing location", e);
             entityManager.getTransaction().rollback();

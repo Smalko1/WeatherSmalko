@@ -22,28 +22,25 @@ public class AuthorizationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         var request = (HttpServletRequest) servletRequest;
-        if (isUserLoggedIn(request)) {
-            filterChain.doFilter(request, servletResponse);
+        isUserLoggedIn(request);
+        filterChain.doFilter(request, servletResponse);
+
+    }
+
+    private void isUserLoggedIn(HttpServletRequest request) {
+        var userId = (Integer) request.getSession().getAttribute(ATTRIBUTE_USER_ID);
+        if (userId == null) {
+            var sessionIdInCookies = findSessionIdInCookies(request);
+            if (sessionIdInCookies != null) {
+                var sessionResult = SessionService.getInstance().getSessionById(Integer.parseInt(sessionIdInCookies));
+                if (sessionResult.isSuccessful()) {
+                    var session = request.getSession();
+                    session.setAttribute("userId", sessionResult.getReadUserDto().getId());
+                }
+            }
         }
     }
 
-    private boolean isUserLoggedIn(HttpServletRequest request) {
-        var userId = (Integer) request.getSession().getAttribute(ATTRIBUTE_USER_ID);
-        if (userId != null){
-            return true;
-        }else {
-            var sessionIdInCookies = findSessionIdInCookies(request);
-            if (sessionIdInCookies != null){
-                var sessionResult = SessionService.getInstance().getSessionById(Integer.parseInt(sessionIdInCookies));
-                if (sessionResult.isSuccessful()){
-                    var session = request.getSession();
-                    session.setAttribute("userId", sessionResult.getReadUserDto().getId());
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
     private String findSessionIdInCookies(HttpServletRequest request) {
         var cookies = request.getCookies();
         String sessionId = null;

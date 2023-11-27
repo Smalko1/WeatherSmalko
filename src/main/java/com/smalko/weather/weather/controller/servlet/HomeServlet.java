@@ -106,8 +106,6 @@ public class HomeServlet extends BaseServlet {
         super.doPost(request, response);
 
         // TODO: 23.11.2023 Если пользователь не авторизоаван то когда он нажимает добавить до фаворитов то он должен авторизороваться и перекинуться на страниуу login
-        //Написать обработку кнопки добавить в избраное, выводить лист своих избранных
-        //Розобраться с проблемой ввода названия городв в которых есть 2 и больше слов которые рразделены -
     }
 
     private void handleSeeMoreRequest(String cityName, String lat, String lon, String seeMore) {
