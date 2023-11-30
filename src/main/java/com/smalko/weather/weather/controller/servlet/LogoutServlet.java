@@ -1,9 +1,11 @@
 package com.smalko.weather.weather.controller.servlet;
 
 import com.smalko.weather.weather.util.UrlPath;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
@@ -14,10 +16,8 @@ public class LogoutServlet extends BaseServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getSession().invalidate();
         cookie(response);
-        response.sendRedirect(UrlPath.LOGIN);
+        response.sendRedirect(request.getContextPath() + UrlPath.LOGIN);
     }
-
-    // TODO: 27.11.2023 Не перенаправляет на логин сттаницу 
 
     private static void cookie(HttpServletResponse response) {
         var sessionCookie = new Cookie("sessionId", null);

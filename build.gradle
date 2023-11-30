@@ -35,7 +35,8 @@ dependencies {
     implementation('org.glassfish.jaxb:jaxb-runtime:4.0.1')
     implementation 'com.h2database:h2:2.2.224'
     implementation 'org.mindrot:jbcrypt:0.4'
-    implementation 'org.postgresql:postgresql:42.6.0'
+    implementation 'org.postgresql:postgresql:42.7.0'
+
     implementation 'org.thymeleaf:thymeleaf:3.1.2.RELEASE'
     implementation 'org.webjars:bootstrap:5.3.2'
 

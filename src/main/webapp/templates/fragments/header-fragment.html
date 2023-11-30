@@ -17,7 +17,9 @@
                 </div>
                 <ul class="navbar-nav ml-auto mb-2 mb-lg-1 right" style="margin-left: auto">
                     <li class="nav-item" th:if="${model.loggedIn}">
-                        <a class="nav-link active" href="/logout">Logout</a>
+                        <form action="/logout" method="post" class="nav-link active">
+                            <button type="submit" class="btn btn-link" style="text-decoration: none;">Logout</button>
+                        </form>
                     </li>
                     <li class="nav-item" th:unless="${model.loggedIn}">
                         <a class="nav-link active" href="/registration">Registration</a>

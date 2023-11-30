@@ -15,6 +15,11 @@
     <div th:replace="~{fragments/header-fragment ::header}"></div>
 
 </header>
+<div th:if="${model.errorAndLocation != null}" class="mt-xl-4 text-center">
+    <div class="alert alert-danger mx-auto" role="alert" style="max-width: 500px;">
+        <span th:text="${model.errorAndLocation}"></span>
+    </div>
+</div>
 <div class="container-fluid vh-100" style="margin-top:300px">
     <div class="" style="margin-top:200px">
         <div class="rounded d-flex justify-content-center">

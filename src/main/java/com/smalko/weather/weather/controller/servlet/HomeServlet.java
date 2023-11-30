@@ -4,15 +4,23 @@ import com.smalko.weather.weather.location.dto.CreateLocationDto;
 import com.smalko.weather.weather.location.result.SearchCity;
 import com.smalko.weather.weather.location.service.LocationService;
 import com.smalko.weather.weather.location.service.OpenWeatherAPI;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static com.smalko.weather.weather.util.Attributes.*;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_CITY_NAME;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_ERROR_ADD_LOCATION;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_FAVORITE;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_LAT;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_LON;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_SEARCH_CITY;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_SEE_MORE;
 import static com.smalko.weather.weather.util.UrlPath.HOME;
 import static com.smalko.weather.weather.util.UrlPath.LOGIN;
 
@@ -55,7 +63,9 @@ public class HomeServlet extends BaseServlet {
             putAttributeInModel("removeLocationSuccessful", false);
 
         }
-        removeSessionAttribute(request, ATTRIBUTE_CITY_NAME, ATTRIBUTE_LON, ATTRIBUTE_LAT, ATTRIBUTE_FAVORITE, ATTRIBUTE_SEE_MORE, ATTRIBUTE_SEARCH_CITY, ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL);
+
+
+        removeSessionAttribute(request, ATTRIBUTE_CITY_NAME, ATTRIBUTE_LON, ATTRIBUTE_LAT, ATTRIBUTE_FAVORITE, ATTRIBUTE_SEE_MORE, ATTRIBUTE_SEARCH_CITY, ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL, ATTRIBUTE_ERROR_ADD_LOCATION);
         super.processTemplate("home", request, response);
     }
 
@@ -82,8 +92,16 @@ public class HomeServlet extends BaseServlet {
 
             if (favorite != null) {
                 log("Add location in favorite list");
-                addLocationInFavorite(request, response, cityName, lat, lon);
-                response.sendRedirect(request.getContextPath() + HOME);
+                var userId = getUserId(request);
+                if (userId == null) {
+                    log.info("In order to add a location to your favorites, you need to register or log in");
+                    String message = "In order to add a location to your favorites, you need to register or log in";
+                    request.getSession().setAttribute(ATTRIBUTE_ERROR_ADD_LOCATION, message);
+                    response.sendRedirect(request.getContextPath() + LOGIN);
+                } else {
+                    addLocationInFavorite(cityName, lat, lon, userId);
+                    response.sendRedirect(request.getContextPath() + HOME);
+                }
                 return;
             }
         }
@@ -98,8 +116,6 @@ public class HomeServlet extends BaseServlet {
             return;
         }
         super.doPost(request, response);
-
-        // TODO: 23.11.2023 Если пользователь не авторизоаван то когда он нажимает добавить до фаворитов то он должен авторизороваться и перекинуться на страниуу login
     }
 
     private void handleSeeMoreRequest(String cityName, String lat, String lon, String seeMore) {
@@ -109,21 +125,14 @@ public class HomeServlet extends BaseServlet {
         putAttributeInModel("seeWeather", searchWeather);
     }
 
-    private void addLocationInFavorite(HttpServletRequest request,HttpServletResponse response , String cityName, String lat, String lon) throws IOException {
-        log.info("User wants to add location in favorites list");
-        var userId = getUserId(request);
-        if (userId == null){
-            String message = "In order to add a location to your favorites, you need to register or log in";
-            request.setAttribute(ATTRIBUTE_ERROR_ADD_LOCATION, message);
-            response.sendRedirect(request.getContextPath() + LOGIN);
-            return;
-        }
+    private void addLocationInFavorite(String cityName, String lat, String lon, Integer userId) throws IOException {
         var createLocationDto = CreateLocationDto.builder()
                 .userId(userId)
                 .name(cityName)
                 .latitude(Double.valueOf(lat))
                 .longitude(Double.valueOf(lon))
                 .build();
+        log.info("User wants to add location in favorites list");
 
         LocationService.getInstance().saveLocationInUser(createLocationDto);
     }
@@ -144,5 +153,4 @@ public class HomeServlet extends BaseServlet {
         log.info("user id = {}", userId);
         return userId;
     }
-
 }

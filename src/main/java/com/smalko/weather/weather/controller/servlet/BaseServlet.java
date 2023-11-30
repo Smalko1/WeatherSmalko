@@ -1,10 +1,12 @@
 package com.smalko.weather.weather.controller.servlet;
 
 import com.smalko.weather.weather.location.service.OpenWeatherAPI;
-import com.smalko.weather.weather.util.Attributes;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
@@ -18,7 +20,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.smalko.weather.weather.util.Attributes.*;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_SEARCH_CITY;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_USER_ID;
 import static com.smalko.weather.weather.util.UrlPath.HOME;
 
 @WebServlet
@@ -65,7 +68,8 @@ public class BaseServlet extends HttpServlet {
             search = search.trim();
             if (!search.isEmpty()) {
                 log.info("search weather by {}", search);
-                var searchCity = OpenWeatherAPI.requestWeatherByCity(search);
+                var searchCity = OpenWeatherAPI.requestCoordinatesByCity(search);
+
                 request.getSession().setAttribute(ATTRIBUTE_SEARCH_CITY, searchCity);
                 response.sendRedirect(request.getContextPath() + HOME);
                 return;

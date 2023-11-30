@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Proxy;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SessionService {
@@ -54,14 +56,14 @@ public class SessionService {
                 (proxy, method, args1) -> method.invoke(HibernateUtil.getSessionFactory().getCurrentSession(), args1));
         entityManager.getTransaction().begin();
         try {
-            var session = SessionRepository.getInstance(entityManager).findById(sessionId);
+            var session = SessionRepository.getInstance(entityManager)
+                    .findById(sessionId)
+                    .orElseThrow(NoSuchElementException::new);
             entityManager.getTransaction().commit();
             log.info("Retrieving a session by its id");
-            return session
-                    .map(value -> GetSessionResult.result(UserMapper.INSTANCE.userToUserDto(value.getUsersEntity())))
-                    .orElseGet(GetSessionResult::result);
+            return GetSessionResult.result(UserMapper.INSTANCE.userToUserDto(session.getUsersEntity()));
 
-        }catch (NoResultException | HibernateException e){
+        }catch (NoResultException | HibernateException | NoSuchElementException e){
             entityManager.getTransaction().rollback();
             log.error("An error occurred while taking a session", e);
             return GetSessionResult.result();

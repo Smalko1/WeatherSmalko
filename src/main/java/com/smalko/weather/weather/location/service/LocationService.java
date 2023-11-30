@@ -5,8 +5,6 @@ import com.smalko.weather.weather.location.LocationRepository;
 import com.smalko.weather.weather.location.dto.CreateLocationDto;
 import com.smalko.weather.weather.location.mapper.LocationMapper;
 import com.smalko.weather.weather.location.result.FavoriteLocationsUserResult;
-import com.smalko.weather.weather.location.result.SearchWeatherResult;
-import com.smalko.weather.weather.user.UsersEntity;
 import com.smalko.weather.weather.user.UsersRepository;
 import com.smalko.weather.weather.util.HibernateUtil;
 import jakarta.persistence.EntityManager;
@@ -14,7 +12,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
-import org.hibernate.procedure.NoSuchParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
