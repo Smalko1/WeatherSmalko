@@ -1,5 +1,8 @@
 package com.smalko.weather.weather.util;
 
+import com.smalko.weather.weather.location.Location;
+import com.smalko.weather.weather.session.Session;
+import com.smalko.weather.weather.user.UsersEntity;
 import lombok.experimental.UtilityClass;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -16,6 +19,9 @@ public class HibernateUtil {
             var configuration = new Configuration();
 
             configuration.configure();
+            configuration.addAnnotatedClass(UsersEntity.class);
+            configuration.addAnnotatedClass(Session.class);
+            configuration.addAnnotatedClass(Location.class);
 
             log.info("Create Session Factory");
             return sessionFactory = configuration.buildSessionFactory();

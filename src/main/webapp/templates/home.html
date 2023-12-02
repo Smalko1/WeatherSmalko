@@ -48,6 +48,11 @@
             <span th:if="${model.searchCityException.message}" th:text="${model.searchCityException.getMessage()}"></span>
         </div>
     </div>
+    <div th:if="${model.error != null}" class="mt-xl-4 text-center">
+        <div class="alert alert-danger mx-auto" role="alert" style="max-width: 500px;">
+            <span th:text="${model.error}"></span>
+        </div>
+    </div>
 
     <div th:replace="~{fragments/seeMoreWeatherInCity ::seeWeather}"></div>
     <div th:replace="~{fragments/favoritesWeather ::favoritesWeather}"></div>

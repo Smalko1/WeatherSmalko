@@ -20,8 +20,6 @@
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
 
-        <mapping class="com.smalko.weather.weather.user.UsersEntity"/>
-        <mapping class="com.smalko.weather.weather.session.Session"/>
-        <mapping class="com.smalko.weather.weather.location.Location"/>
+
     </session-factory>
 </hibernate-configuration>

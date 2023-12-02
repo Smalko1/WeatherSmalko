@@ -21,8 +21,8 @@ import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_LON;
 import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL;
 import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_SEARCH_CITY;
 import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_SEE_MORE;
-import static com.smalko.weather.weather.util.UrlPath.HOME;
-import static com.smalko.weather.weather.util.UrlPath.LOGIN;
+import static com.smalko.weather.weather.util.UrlPath.*;
+
 
 @WebServlet(name = "HomeServlet", value = HOME)
 public class HomeServlet extends BaseServlet {
@@ -38,7 +38,11 @@ public class HomeServlet extends BaseServlet {
         if (searchCity != null) {
             getSearchCity(searchCity);
         }
+        var errorHandler = (String)request.getSession().getAttribute(ERROR_HANDLER);
 
+        if (errorHandler != null){
+            putAttributeInModel("error", errorHandler);
+        }
         var cityName = (String) request.getSession().getAttribute(ATTRIBUTE_CITY_NAME);
         var lat = (String) request.getSession().getAttribute(ATTRIBUTE_LAT);
         var lon = (String) request.getSession().getAttribute(ATTRIBUTE_LON);

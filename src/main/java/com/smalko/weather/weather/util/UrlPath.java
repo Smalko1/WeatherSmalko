@@ -8,4 +8,5 @@ public class UrlPath {
     public static final String LOGIN = "/login";
     public static final String HOME = "/home";
     public static final String LOGOUT = "/logout";
+    public static final String ERROR_HANDLER = "/errorHandler";
 }
