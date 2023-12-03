@@ -4,7 +4,6 @@ import com.smalko.weather.weather.session.SessionService;
 import com.smalko.weather.weather.user.UsersService;
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
 import com.smalko.weather.weather.user.result.LoginResult;
-import com.smalko.weather.weather.util.UrlPath;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
@@ -14,9 +13,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
 
-import static com.smalko.weather.weather.util.Attributes.*;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_ERROR;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_ERROR_ADD_LOCATION;
+import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_USER_ID;
+import static com.smalko.weather.weather.util.UrlPath.HOME;
+import static com.smalko.weather.weather.util.UrlPath.LOGIN;
 
-@WebServlet(name = "LoginServlet", value = UrlPath.LOGIN)
+@WebServlet(name = "LoginServlet", value = LOGIN)
 public class LoginServlet extends BaseServlet {
     private static final Duration ONE_DAY = Duration.ofDays(1);
 
@@ -57,7 +60,7 @@ public class LoginServlet extends BaseServlet {
                 var session = request.getSession();
                 session.setAttribute(ATTRIBUTE_USER_ID, loginResult.getUser().getId());
                 createCookie(response, loginResult);
-                response.sendRedirect(UrlPath.HOME);
+                response.sendRedirect(HOME);
                 return;
             } else {
                 request.getSession().setAttribute(ATTRIBUTE_ERROR, loginResult.getErrors());

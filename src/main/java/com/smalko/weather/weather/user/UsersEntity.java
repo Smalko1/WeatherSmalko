@@ -1,6 +1,6 @@
 package com.smalko.weather.weather.user;
 
-import com.smalko.weather.weather.location.Location;
+import com.smalko.weather.weather.location.LocationEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
@@ -32,14 +32,14 @@ public class UsersEntity {
     @Builder.Default
     @OneToMany(mappedBy = "users", orphanRemoval = true)
     @Cascade(ALL)
-    private Set<Location> locations = new HashSet<>();
+    private Set<LocationEntity> locations = new HashSet<>();
 
-    public void addLocation(Location location){
+    public void addLocation(LocationEntity location){
         locations.add(location);
         location.setUsers(this);
     }
 
-    public void removeLocation(Location location) {
+    public void removeLocation(LocationEntity location) {
         locations.remove(location);
         location.setUsers(null);
     }

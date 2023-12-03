@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
 
 @Data
 @Builder
@@ -16,7 +15,7 @@ import org.hibernate.annotations.Cascade;
 @Table(name = "location", indexes = {
         @Index(name = "idx_location_coords", columnList = "latitude, longitude")
 })
-public class Location {
+public class LocationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

@@ -1,6 +1,6 @@
 package com.smalko.weather.weather.location.mapper;
 
-import com.smalko.weather.weather.location.Location;
+import com.smalko.weather.weather.location.LocationEntity;
 import com.smalko.weather.weather.location.dto.CreateLocationDto;
 import com.smalko.weather.weather.location.dto.ReadSearchCityDto;
 import com.smalko.weather.weather.location.json.SearchCityList;
@@ -15,5 +15,5 @@ public interface LocationMapper {
     ReadSearchCityDto searchCityToReadSearchCityDto(SearchCityList searchCityList);
     @Mapping(target = "users", ignore = true)
     @Mapping(target = "id", ignore = true)
-    Location createLocationDtoToLocationEntity(CreateLocationDto createLocationDto);
+    LocationEntity createLocationDtoToLocationEntity(CreateLocationDto createLocationDto);
 }

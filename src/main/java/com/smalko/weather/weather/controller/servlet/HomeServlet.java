@@ -21,7 +21,9 @@ import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_LON;
 import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL;
 import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_SEARCH_CITY;
 import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_SEE_MORE;
-import static com.smalko.weather.weather.util.UrlPath.*;
+import static com.smalko.weather.weather.util.UrlPath.ERROR_HANDLER;
+import static com.smalko.weather.weather.util.UrlPath.HOME;
+import static com.smalko.weather.weather.util.UrlPath.LOGIN;
 
 
 @WebServlet(name = "HomeServlet", value = HOME)
@@ -129,7 +131,7 @@ public class HomeServlet extends BaseServlet {
         putAttributeInModel("seeWeather", searchWeather);
     }
 
-    private void addLocationInFavorite(String cityName, String lat, String lon, Integer userId) throws IOException {
+    private void addLocationInFavorite(String cityName, String lat, String lon, Integer userId){
         var createLocationDto = CreateLocationDto.builder()
                 .userId(userId)
                 .name(cityName)

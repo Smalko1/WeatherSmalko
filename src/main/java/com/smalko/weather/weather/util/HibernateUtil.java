@@ -1,10 +1,11 @@
 package com.smalko.weather.weather.util;
 
-import com.smalko.weather.weather.location.Location;
-import com.smalko.weather.weather.session.Session;
+import com.smalko.weather.weather.location.LocationEntity;
+import com.smalko.weather.weather.session.SessionEntity;
 import com.smalko.weather.weather.user.UsersEntity;
 import lombok.experimental.UtilityClass;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +21,16 @@ public class HibernateUtil {
 
             configuration.configure();
             configuration.addAnnotatedClass(UsersEntity.class);
-            configuration.addAnnotatedClass(Session.class);
-            configuration.addAnnotatedClass(Location.class);
+            configuration.addAnnotatedClass(SessionEntity.class);
+            configuration.addAnnotatedClass(LocationEntity.class);
 
-            log.info("Create Session Factory");
-            return sessionFactory = configuration.buildSessionFactory();
+            log.info("Create SessionEntity Factory");
+
+            var serviceRegistry = new StandardServiceRegistryBuilder()
+                    .applySettings(configuration.getProperties())
+                    .build();
+
+            return configuration.buildSessionFactory(serviceRegistry);
         } catch (Throwable ex) {
 
            log.error("Initial SessionFactory creation failed: ", ex);

@@ -1,6 +1,6 @@
 package com.smalko.weather.weather.session.mapper;
 
-import com.smalko.weather.weather.session.Session;
+import com.smalko.weather.weather.session.SessionEntity;
 import com.smalko.weather.weather.session.dto.CreateSessionDto;
 import com.smalko.weather.weather.session.dto.ReadSessionDto;
 import org.mapstruct.Mapper;
@@ -12,7 +12,7 @@ public interface SessionMapper {
     SessionMapper INSTANCE = Mappers.getMapper(SessionMapper.class);
 
     @Mapping(target = "id", ignore = true)
-    Session createSessionDtoToSessionEntity(CreateSessionDto createSessionDto);
+    SessionEntity createSessionDtoToSessionEntity(CreateSessionDto createSessionDto);
 
-    ReadSessionDto sessionEntityToReadSessionDto(Session session);
+    ReadSessionDto sessionEntityToReadSessionDto(SessionEntity session);
 }

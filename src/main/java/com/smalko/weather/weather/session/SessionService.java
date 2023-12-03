@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Proxy;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -79,7 +78,7 @@ public class SessionService {
             var expiredSessionSession = SessionRepository.getInstance(entityManager).findAllExpiredSession();
             log.info("Get expired session, {}", expiredSessionSession);
             entityManager.getTransaction().commit();
-            for (Session session : expiredSessionSession) {
+            for (SessionEntity session : expiredSessionSession) {
                 entityManager.getTransaction().begin();
                 SessionRepository.getInstance(entityManager).deleteEntity(session);
                 entityManager.getTransaction().commit();

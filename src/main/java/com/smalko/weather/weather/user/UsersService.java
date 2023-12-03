@@ -1,7 +1,5 @@
 package com.smalko.weather.weather.user;
 
-import com.smalko.weather.weather.location.Location;
-import com.smalko.weather.weather.session.result.GetSessionResult;
 import com.smalko.weather.weather.user.dto.CreateUsersDto;
 import com.smalko.weather.weather.user.dto.ReadUserDto;
 import com.smalko.weather.weather.user.mapper.UserMapper;
@@ -25,10 +23,6 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UsersService {

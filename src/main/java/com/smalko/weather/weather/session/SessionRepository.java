@@ -2,33 +2,30 @@ package com.smalko.weather.weather.session;
 
 import com.smalko.weather.weather.util.repository.RepositoryUtil;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
-public class SessionRepository extends RepositoryUtil<Integer, Session> {
+public class SessionRepository extends RepositoryUtil<Integer, SessionEntity> {
 
     private static SessionRepository instance;
-    private SessionRepository(Class<Session> clazz, EntityManager entityManager) {
+    private SessionRepository(Class<SessionEntity> clazz, EntityManager entityManager) {
         super(clazz, entityManager);
     }
 
     public static SessionRepository getInstance(EntityManager entityManager){
         if (instance == null){
-            instance = new SessionRepository(Session.class, entityManager);
+            instance = new SessionRepository(SessionEntity.class, entityManager);
         }
         return instance;
     }
 
-    public List<Session> findAllExpiredSession() {
+    public List<SessionEntity> findAllExpiredSession() {
         LocalDateTime now = LocalDateTime.now();
         var criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        var criteria = criteriaBuilder.createQuery(Session.class);
-        var from = criteria.from(Session.class);
+        var criteria = criteriaBuilder.createQuery(SessionEntity.class);
+        var from = criteria.from(SessionEntity.class);
 
         criteria.select(from)
                 .orderBy(criteriaBuilder.asc(from.get("expiresAt")));
@@ -36,8 +33,8 @@ public class SessionRepository extends RepositoryUtil<Integer, Session> {
         var resultList = getEntityManager().createQuery(criteria)
                 .getResultList();
 
-        List<Session> result = new ArrayList<>();
-        for (Session value : resultList) {
+        List<SessionEntity> result = new ArrayList<>();
+        for (SessionEntity value : resultList) {
             if (value.getExpiresAt().isBefore(now)) {
                 result.add(value);
             } else

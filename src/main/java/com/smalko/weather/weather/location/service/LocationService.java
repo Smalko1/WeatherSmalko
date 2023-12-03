@@ -1,6 +1,6 @@
 package com.smalko.weather.weather.location.service;
 
-import com.smalko.weather.weather.location.Location;
+import com.smalko.weather.weather.location.LocationEntity;
 import com.smalko.weather.weather.location.LocationRepository;
 import com.smalko.weather.weather.location.dto.CreateLocationDto;
 import com.smalko.weather.weather.location.mapper.LocationMapper;
@@ -56,7 +56,7 @@ public class LocationService {
         try {
             var locationsByUserId = LocationRepository.getInstance(entityManager).getLocationsByUserId(userId);
             entityManager.getTransaction().commit();
-            for (Location location : locationsByUserId) {
+            for (LocationEntity location : locationsByUserId) {
                 log.info("Add location Id {}", location.getId());
                 var searchWeatherResult = OpenWeatherAPI.requestWeather(location.getLatitude(), location.getLongitude(), location.getName());
                 searchWeatherResult.setLocationId(location.getId());
@@ -79,8 +79,8 @@ public class LocationService {
             var users = UsersRepository.getInstance(entityManager).findById(userId)
                     .orElseThrow(() -> new NoSuchElementException("The user is not found by the specified identifier: " + userId));
 
-            Location removeLocation = null;
-            for (Location location : users.getLocations()) {
+            LocationEntity removeLocation = null;
+            for (LocationEntity location : users.getLocations()) {
                 if (location.getId().equals(locationId)){
                     removeLocation = location;
                     break;
