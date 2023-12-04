@@ -60,7 +60,7 @@ public class LoginServlet extends BaseServlet {
                 var session = request.getSession();
                 session.setAttribute(ATTRIBUTE_USER_ID, loginResult.getUser().getId());
                 createCookie(response, loginResult);
-                response.sendRedirect(HOME);
+                response.sendRedirect(request.getContextPath() + HOME);
                 return;
             } else {
                 request.getSession().setAttribute(ATTRIBUTE_ERROR, loginResult.getErrors());

@@ -46,7 +46,7 @@ public class RegistrationServlet extends BaseServlet {
             if (!result.isSuccess()) {
                 request.getSession().setAttribute(ATTRIBUTE_ERROR, result.getErrors());
             } else {
-                response.sendRedirect(LOGIN);
+                response.sendRedirect(request.getContextPath() + LOGIN);
                 return;
             }
         }

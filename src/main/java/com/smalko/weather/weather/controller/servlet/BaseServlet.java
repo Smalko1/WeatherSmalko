@@ -105,4 +105,8 @@ public class BaseServlet extends HttpServlet {
             }
         }
     }
+
+    protected void redirect(String redirect, HttpServletRequest request ,HttpServletResponse response) throws IOException {
+        response.sendRedirect(request.getContextPath() + redirect);
+    }
 }
