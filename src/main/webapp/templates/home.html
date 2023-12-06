@@ -28,9 +28,8 @@
         <span th:text="${model.searchWeatherException}"></span>
     </div>
 
-    <form th:if="${model.searchCityList != null}" class="d-flex flex-row mt-4 overflow-auto mt-4" action="/home"
-          method="post">
-        <div class="card mx-2" style="width: 18rem;" th:each="city : ${model.searchCityList}">
+    <div th:if="${model.searchCityList != null}" class="d-flex flex-row mt-4 overflow-auto mt-4">
+        <form class="card mx-2" style="width: 18rem;" th:each="city : ${model.searchCityList}" action="/" method="post">
             <div class="card-body">
                 <h5 class="card-title" th:text="|${city.getName} ${city.getCountry}|"></h5>
                 <p class="card-text"></p>
@@ -40,8 +39,8 @@
                 <input type="hidden" name="seeMore" th:value="${true}">
                 <button type="submit" class="btn btn-primary" role="button">See more</button>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 
     <div th:if="${model.searchCityException != null}" class="mt-xl-4 text-center">
         <div class="alert alert-danger mx-auto" role="alert" style="max-width: 500px;">

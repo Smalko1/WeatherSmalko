@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/weather</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="weatherAWS" uuid="607864f3-9563-4f2c-9b43-a10ed283ef15">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://awseb-e-hchtrf3wh8-stack-awsebrdsdatabase-eabhmrhoknqr.cxd46cx4adh1.eu-central-1.rds.amazonaws.com:5432/awseb-e-hchtrf3wh8-stack-awsebrdsdatabase-eabhmrhoknqr</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

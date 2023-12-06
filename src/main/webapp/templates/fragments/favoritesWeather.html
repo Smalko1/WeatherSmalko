@@ -7,8 +7,8 @@
     </div>
   </div>
   <div th:if="${model.favoritesLocations != null}" class="d-flex flex-row flex-wrap mt-4 overflow-auto mt-4">
-    <form th:if="${model.favoritesLocations.isSuccessful}" action="/home" method="post" class="d-flex flex-row flex-wrap">
-      <div class="card mx-2 mb-2" style="width: 18rem;" th:each="weatherResultSuccessful : ${model.favoritesLocations.searchWeatherResultsSuccessful}">
+    <div th:if="${model.favoritesLocations.isSuccessful}"  class="d-flex flex-row flex-wrap">
+      <form class="card mx-2 mb-2" style="width: 18rem;" th:each="weatherResultSuccessful : ${model.favoritesLocations.searchWeatherResultsSuccessful}" action="/" method="post">
         <div class="card-body">
           <h5 class="card-title" th:text="${weatherResultSuccessful.weather.getCityName}"></h5>
           <div th:with="currentWeather=${weatherResultSuccessful.weather.current}">
@@ -29,8 +29,8 @@
           <input type="hidden" name="removeLocation" th:value="${weatherResultSuccessful.getLocationId}">
           <button type="submit" class="btn btn-primary" role="button">Delete</button>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
     <div th:unless="${model.favoritesLocations.searchWeatherResultsUnSuccessful.isEmpty()}" class="d-flex flex-row mt-4 overflow-auto mt-4">
       <div class="card mx-2" style="width: 18rem;">
         <div class="card-body">

@@ -13,15 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_CITY_NAME;
-import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_ERROR_ADD_LOCATION;
-import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_FAVORITE;
-import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_LAT;
-import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_LON;
-import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_REMOVE_LOCATION_SUCCESSFUL;
-import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_SEARCH_CITY;
-import static com.smalko.weather.weather.util.Attributes.ATTRIBUTE_SEE_MORE;
-import static com.smalko.weather.weather.util.UrlPath.ERROR_HANDLER;
+import static com.smalko.weather.weather.util.Attributes.*;
 import static com.smalko.weather.weather.util.UrlPath.HOME;
 import static com.smalko.weather.weather.util.UrlPath.LOGIN;
 
@@ -35,15 +27,14 @@ public class HomeServlet extends BaseServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         super.doGet(request, response);
         putAttributeInModel("home", true);
+        var error = request.getSession().getAttribute(ATTRIBUTE_ERROR);
+        if (error != null){
+            putAttributeInModel("error", error);
+        }
 
         var searchCity = (SearchCity) request.getSession().getAttribute(ATTRIBUTE_SEARCH_CITY);
         if (searchCity != null) {
             getSearchCity(searchCity);
-        }
-        var errorHandler = (String)request.getSession().getAttribute(ERROR_HANDLER);
-
-        if (errorHandler != null){
-            putAttributeInModel("error", errorHandler);
         }
         var cityName = (String) request.getSession().getAttribute(ATTRIBUTE_CITY_NAME);
         var lat = (String) request.getSession().getAttribute(ATTRIBUTE_LAT);

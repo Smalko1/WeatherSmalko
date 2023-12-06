@@ -27,7 +27,7 @@ public class LoginServlet extends BaseServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         super.doGet(request, response);
 
-        var errors = (String) request.getSession().getAttribute(ATTRIBUTE_ERROR);
+        var errors = request.getSession().getAttribute(ATTRIBUTE_ERROR);
         if (errors != null){
             putAttributeInModel("errors", errors);
         }
